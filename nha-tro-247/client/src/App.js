@@ -2,6 +2,8 @@ import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
+import "./App.css";
+
 import TopMenu from "./components/TopMenu";
 import Home from "./components/Home";
 import User from "./components/Users";
@@ -11,14 +13,10 @@ const UsersComp = () => <User />;
 
 function App() {
     return (
-        <Router>
-            <div className="App">
-                <TopMenu />
-
-                <Route path="/" exact component={HomeComp} />
-                <Route path="/users" component={UsersComp} />
-            </div>
-        </Router>
+        <div className="App">
+            <div className="App-body-left">body left</div>
+            <div className="App-body-right">body right</div>
+        </div>
     );
 }
 
