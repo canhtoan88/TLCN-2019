@@ -13,7 +13,7 @@ var usersApi = require("./server/api/users.api");
 var app = express();
 
 // Connect to MongoDB
-mongoose.connect("mongodb://localhost:27017/dbtest", {
+mongoose.connect("mongodb://localhost:27017/local", {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
@@ -60,4 +60,5 @@ app.use(function(err, req, res, next) {
     res.render("error");
 });
 
-module.exports = app;
+//module.exports = app;
+app.listen(5000);
