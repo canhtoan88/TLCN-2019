@@ -2,9 +2,9 @@ import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
-import TopMenu from "./components/TopMenu.component";
-import Home from "./components/Home.component";
-import User from "./components/Users.component";
+import TopMenu from "./components/TopMenu";
+import Home from "./components/Home";
+import User from "./components/Users";
 
 const HomeComp = () => <Home />;
 const UsersComp = () => <User />;
