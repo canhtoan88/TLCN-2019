@@ -1,24 +1,31 @@
-import React from "react";
+import React, { Component } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { Container, Row, Col } from "react-bootstrap";
 
 import "./App.css";
+import Maps from "./components/Maps";
+import Field from "./components/Field";
 
-import TopMenu from "./components/TopMenu";
-import Home from "./components/Home";
-import User from "./components/Users";
-import Map from "./components/Maps";
+export default class App extends Component {
+    render() {
+        return (
+            <div className="app">
+                {/* <Row className="app-row">
+                    <Col sm={12} md={4} className="app-body-left">
+                        <Field />
+                    </Col>
+                    <Col sm={12} md={8} className="app-body-right">
+                        <Maps />
+                    </Col>
+                </Row> */}
 
-const HomeComp = () => <Home />;
-const UsersComp = () => <User />;
-
-function App() {
-    return (
-        <div className="App">
-            <div className="App-body-left">body left</div>
-            <div className="App-body-right"><Map/></div>
-        </div>
-    );
+                <div className="app-body-left">
+                    <Field />
+                </div>
+                <div className="app-body-right">
+                    <Maps />
+                </div>
+            </div>
+        );
+    }
 }
-
-export default App;

@@ -1,0 +1,35 @@
+.field-filter {
+    
+}
+
+.input-search {
+    margin-top: 20px;
+}
+
+.input-label {
+    margin-bottom: 0px;
+    padding-left: 6px;
+}
+
+.input-label2 {
+    margin-top: 6px;
+}
+
+.form-group-custom {
+    margin-bottom: 10px;
+}
+
+.field-results-title {
+    color: #4caf50;
+    font-weight: bold;
+    text-transform: uppercase;
+    padding-top: 15px;
+}
+
+.field-results-filter {
+    text-align: right;
+}
+
+.hr-custom {
+    margin-top: 0px;
+}

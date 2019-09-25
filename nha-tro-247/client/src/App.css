@@ -1,18 +1,65 @@
-.App {
+/* .app {
     width: 100%;
     height: 100%;
 }
 
-.App-body-left {
-    width: 30%;
+.app-row {
     height: 100%;
-    background-color: yellow;
-    float: left;
+    margin: 0px;
 }
 
-.App-body-right {
+.app-body-left {
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+    overflow: scroll;
+}
+
+.app-body-right {
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+} */
+
+.app {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+.app-body-left {
+    width: 30%;
+    height: 100%;
+    overflow: scroll;
+    position: relative;
+}
+
+.app-body-right {
     width: 70%;
     height: 100%;
-    background-color: blue;
-    float: right;
+    position: relative;
+}
+
+@media only screen and (max-width: 576px) {
+    .app {
+        display: flex;
+        flex-direction: column-reverse;
+    }
+
+    .app-body-right {
+        width: 100%;
+        height: 400px;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+    }
+
+    .app-body-left {
+        width: 100%;
+        position: absolute;
+        top: 400px;
+        left: 0px;
+        overflow: visible;
+    }
 }
