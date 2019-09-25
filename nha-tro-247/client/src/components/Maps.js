@@ -79,12 +79,11 @@ export class MapContainer extends Component {
 
         if (map) {
             let center = new maps.LatLng(curr.lat, curr.lng)
-            console.log(map);
             map.panTo(center);
 
             // FitBounds --> góc nhìn hẹp, chỉ khu vực gần kề ở vị trí muốn đặt
-            this.bounds = new maps.LatLngBounds();
-            this.bounds.extend(curr);
+            //this.bounds = new maps.LatLngBounds();
+            //this.bounds.extend(curr);
 
             // Set Marker after get client's current location
             this.marker = new maps.Marker({
@@ -115,17 +114,16 @@ export class MapContainer extends Component {
 
     render() {
         return (
-            <div className="loadingMaps">Đang tải bản đồ!</div>
-            // <div className="map">
-            //     <Map
-            //         google={this.props.google}
-            //         zoom={14}
-            //         initialCenter={this.state.currentLocation}>
-            //         <Marker
-            //             onClick={this.onMarkerClick}
-            //             name={'Current location'}/>
-            //     </Map>
-            // </div>
+            <div className="map">
+                <Map
+                    google={this.props.google}
+                    zoom={14}
+                    initialCenter={this.state.currentLocation}>
+                    <Marker
+                        onClick={this.onMarkerClick}
+                        name={'Current location'}/>
+                </Map>
+            </div>
     );
   }
 }
@@ -147,7 +145,7 @@ MapContainer.defaultProps = {
 }
 
 const LoadingContainer = (props) => (
-  <div className="loadingMaps">Đang tải bản đồ!</div>
+  <div className="loadingMaps">Đang tải bản đồ...</div>
 )
 
 export default GoogleApiWrapper({
