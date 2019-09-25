@@ -1,5 +1,5 @@
-import React, { Component } from 'react'
-import { Map, InfoWindow, Marker, GoogleApiWrapper } from "google-maps-react";
+import React, { Component } from "react";
+import { Map, GoogleApiWrapper } from "google-maps-react";
 
 export class Maps extends Component {
     render() {
@@ -7,7 +7,7 @@ export class Maps extends Component {
             <div className="maps">
                 <Map google={this.props.google} zoom={15}></Map>
             </div>
-        )
+        );
     }
 }
 
