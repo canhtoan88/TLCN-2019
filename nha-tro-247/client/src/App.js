@@ -1,24 +1,21 @@
-import React from "react";
+import React, { Component } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-//import { BrowserRouter as Router, Route } from "react-router-dom";
 
 import "./App.css";
+import Maps from "./components/Maps";
+import Field from "./components/Field";
 
-//import TopMenu from "./components/TopMenu";
-//import Home from "./components/Home";
-//import User from "./components/Users";
-import Map from "./components/Maps";
-
-//const HomeComp = () => <Home />;
-//const UsersComp = () => <User />;
-
-function App() {
-    return (
-        <div className="App">
-            <div className="App-body-left">body left</div>
-            <div className="App-body-right"><Map/></div>
-        </div>
-    );
+export default class App extends Component {
+    render() {
+        return (
+            <div className="app">
+                <div className="app-body-left">
+                    <Field />
+                </div>
+                <div className="app-body-right">
+                    <Maps />
+                </div>
+            </div>
+        );
+    }
 }
-
-export default App;
