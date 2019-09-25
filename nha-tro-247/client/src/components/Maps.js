@@ -1,24 +1,21 @@
 import React, { Component } from "react";
 //import ReactDOM from 'react-dom'
-import PropTypes from "prop-types";
-import {
-    Map,
-    /*InfoWindow,*/ Marker,
-    GoogleApiWrapper
-} from "google-maps-react";
+import PropTypes from 'prop-types';
+import {Map, /*InfoWindow,*/ Marker, GoogleApiWrapper} from 'google-maps-react';
 
-import "./Maps.css";
+import './Maps.css'
 
-export class Maps extends Component {
+export class MapContainer extends Component {
+
     constructor(props) {
         super(props);
-        const { lat, lng } = this.props.initialCenter;
+        const {lat, lng} = this.props.initialCenter;
         this.state = {
             currentLocation: {
                 lat: lat,
                 lng: lng
             }
-        };
+        }
     }
 
     // getLocation() {
@@ -49,15 +46,15 @@ export class Maps extends Component {
     componentDidMount() {
         if (this.props.centerAroundCurrentLocation) {
             if (navigator && navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(pos => {
+                navigator.geolocation.getCurrentPosition((pos) => {
                     const coords = pos.coords;
                     this.setState({
                         currentLocation: {
                             lat: coords.latitude,
                             lng: coords.longitude
                         }
-                    });
-                });
+                    })
+                })
             }
         }
         this.loadMap();
@@ -92,31 +89,26 @@ export class Maps extends Component {
             this.marker = new maps.Marker({
                 map: map,
                 position: center
-            });
+            })
         }
     }
 
     loadMap() {
         if (this.props && this.props.google) {
             // google is available
-            const { google } = this.props;
+            const {google} = this.props;
             const maps = google.maps;
+
 
             let zoom = 14;
             let lat = this.state.currentLocation.lat;
             let lng = this.state.currentLocation.lng;
             const center = new maps.LatLng(lat, lng);
-            const mapConfig = Object.assign(
-                {},
-                {
-                    center: center,
-                    zoom: zoom
-                }
-            );
-            this.map = new maps.Map(
-                document.querySelector(".App-body-right"),
-                mapConfig
-            );
+            const mapConfig = Object.assign({}, {
+                center: center,
+                zoom: zoom
+            })
+            this.map = new maps.Map(document.querySelector('.app-body-right'), mapConfig);
         }
     }
 
@@ -136,13 +128,13 @@ export class Maps extends Component {
   }
 }
 
-Maps.propTypes = {
+MapContainer.propTypes = {
     google: PropTypes.object,
     zoom: PropTypes.number,
     initialCenter: PropTypes.object,
     centerAroundCurrentLocation: PropTypes.bool
-};
-Maps.defaultProps = {
+}
+MapContainer.defaultProps = {
     zoom: 13,
     // Ben Thanh market, by default
     initialCenter: {
@@ -150,14 +142,14 @@ Maps.defaultProps = {
         lng: 106.698077
     },
     centerAroundCurrentLocation: true
-};
+}
 
 const LoadingContainer = (props) => (
   <div className="loadingMaps">Đang tải bản đồ...</div>
 )
 
 export default GoogleApiWrapper({
-    apiKey: "AIzaSyD9mzilMG4xBbeqNYQpBzLysB2YMxWVNfs",
-    language: "vi-vn",
+    apiKey: ('AIzaSyD9mzilMG4xBbeqNYQpBzLysB2YMxWVNfs'),
+    language: 'vi-vn',
     LoadingContainer: LoadingContainer
-})(Maps);
+})(MapContainer)
