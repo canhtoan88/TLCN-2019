@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
 import "./Field_Results_Item.css";
-import { Container, Button } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 
 export default class Fields_Result_Item extends Component {
     render() {
