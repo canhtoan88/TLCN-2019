@@ -1,9 +1,77 @@
 import React, { Component } from "react";
-//import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types';
 import {Map, /*InfoWindow,*/ Marker, GoogleApiWrapper} from 'google-maps-react';
 
 import './Maps.css'
+
+let markers = [], currentDirection = null, circle = null;
+
+// No complete yet Autocomplete -- Not display autocomplete
+export function onPlaceAutocomplete (input, cb) {
+    const google = this.props.google;
+    const maps = google.maps;
+
+    if (!google) return;
+
+    this.autocomplete = new maps.places.Autocomplete(input, {
+        "types": ["cities"]
+    });
+    this.autocomplete.bindTo('bounds', this.map);
+
+    //this.autocomplete.setFields(['address_component', 'formatted_address']); //'geometry', 'icon', 'name'
+
+    // After Enter --> When selected a address
+    this.autocomplete.addListener('place_changed', () => {
+        const addressObject = this.autocomplete.getPlace();
+        cb(addressObject)
+    })
+}
+
+export function onSearchAddress (address, cb) {
+    geocoding(address, results => {
+        // Get Lat and Lng from entered location
+        const { lat, lng } = results[0].geometry.location;
+
+        // Clear current direction if existing
+        if (currentDirection) {
+            currentDirection.setMap(null)
+            currentDirection = null;
+        }
+        // Test Direction
+        this.getRedirectMap(new this.props.google.maps.LatLng(this.state.currentLocation.lat, this.state.currentLocation.lng), results[0].geometry.location);
+
+        // Clear old marker of client's location
+        this.marker.setMap(null)
+        this.setState({
+            currentLocation: {
+                lat: lat(),
+                lng: lng()
+            }
+        })
+
+        // Test draw a circle on map from center position 
+        this.drawCircleFromCenter(this.state.currentLocation, 1000)
+
+        // Show near hostels
+        this.showNearHostel();
+
+        cb(results[0].formatted_address)
+    })
+}
+
+// Get Address or geometry (latitude and longitude)
+function geocoding(address, cb) {
+    const google = this.props.google;
+    const maps = google.maps;
+    const geocoder = new maps.Geocoder();
+    geocoder.geocode({'address': address}, (results, status) => {
+        if (status === maps.GeocoderStatus.OK) {
+            cb(results)
+        } else {
+            return alert( 'Geocode was not successful for the following reason: ' + status );
+        }
+    })
+}
 
 export class MapContainer extends Component {
 
@@ -18,30 +86,11 @@ export class MapContainer extends Component {
         }
     }
 
-    // getLocation() {
-    //     if (navigator.geolocation) {
-    //         navigator.geolocation.getCurrentPosition(pos => {
-    //             this.setState(prevState => ({
-    //                 currentLocation: {
-    //                     lat: pos.coords.latitude,
-    //                     lng: pos.coords.longitude
-    //                 }
-    //             }))
-    //         });
-    //     } else {
-    //         alert("Geolocation is not supported by this browser.");
-    //     }
-    // }
-
-    // UNSAFE_componentWillMount() {
-    //     this.setState({
-    //         currentLocation: {
-    //             lat: 10.772967,
-    //             lng: 106.698077
-    //         }
-    //     })
-    //     //this.getLocation();
-    // }
+    UNSAFE_componentWillMount() {
+        onPlaceAutocomplete = onPlaceAutocomplete.bind(this);
+        onSearchAddress = onSearchAddress.bind(this);
+        geocoding = geocoding.bind(this);
+    }
 
     componentDidMount() {
         if (this.props.centerAroundCurrentLocation) {
@@ -62,7 +111,7 @@ export class MapContainer extends Component {
 
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.google !== this.props.google) {
-            this.loadMap();
+            //this.loadMap();
         }
         if (prevState.currentLocation !== this.state.currentLocation) {
             this.recenterMap();
@@ -86,10 +135,17 @@ export class MapContainer extends Component {
             //this.bounds.extend(curr);
 
             // Set Marker after get client's current location
-            this.marker = new maps.Marker({
-                map: map,
-                position: center
-            })
+            setTimeout(() => {
+                this.marker = new maps.Marker({
+                    map: map,
+                    animation: maps.Animation.DROP,
+                    position: center
+                })
+            }, 300)
+            // Change marker's animation
+            setTimeout(() => {
+                this.marker.setAnimation(maps.Animation.BOUNCE);
+            }, 5000)
         }
     }
 
@@ -110,6 +166,87 @@ export class MapContainer extends Component {
             })
             this.map = new maps.Map(document.querySelector('.app-body-right'), mapConfig);
         }
+    }
+
+    showNearHostel() {
+        this.clearNearHostel();
+
+        const {google} = this.props;
+        const maps = google.maps;
+
+        // Add some new markers
+        const neighborhoods = [
+            new maps.LatLng(10.8613154, 106.75557779999997),
+            new maps.LatLng(10.8513154, 106.76557779999997),
+            new maps.LatLng(10.8413154, 106.74557779999997),
+            new maps.LatLng(10.8433154, 106.75457779999997)
+        ]
+        for (let i = 0; i < neighborhoods.length; i++) {
+            setTimeout(() => {
+                console.log();
+                markers.push(new maps.Marker({
+                    name: 'Your location!',
+                    map: this.map,
+                    animation: maps.Animation.DROP,
+                    position: neighborhoods[i],
+                    icon: {
+                        url: 'logo.svg',
+                        anchor: new maps.Point(32,32),
+                        scaledSize: new maps.Size(30,32)
+                    }
+                }))
+            }, i*500)
+        }
+    }
+
+    clearNearHostel() {
+        markers.forEach(marker => {
+            marker.setMap(null)
+        })
+        markers = [];
+    }
+
+    getRedirectMap(origin, destination) {
+        const google = this.props.google;
+        const maps = google.maps;
+
+        const directionsService = new maps.DirectionsService();
+        const directionsDisplay = new maps.DirectionsRenderer();
+        const request = {
+            origin: origin,
+            destination: destination,
+            travelMode: this.props.google.maps.TravelMode.DRIVING
+        }
+
+
+        directionsDisplay.setMap(this.map);
+        directionsService.route(request, (results, status) => {
+            if (status === 'OK') {
+                directionsDisplay.setDirections(results);
+                currentDirection = directionsDisplay;
+
+                // Get other values
+                const otherValues = results.routes[0].legs[0];
+                const time = otherValues.duration.text;
+                const total = otherValues.distance.text;
+                const from = otherValues.start_address;
+                const to = otherValues.end_address;
+                console.log(`Đi từ ${from} đến ${to} dài ${total} trong ${time}`);
+            }
+        })
+    }
+
+    drawCircleFromCenter(center, radius) {
+        circle = new this.props.google.maps.Circle({
+            strokeColor: '#888', // Màu viên
+            strokeOpacity: 0.5, // Độ mờ viền
+            strokeWeight: 1, // Độ mảnh của đường tròn
+            fillColor: '#03A9F4', // Màu nền của đường tròn
+            fillOpacity: 0.1, // Độ trong suốt của nền
+            map: this.map, // Hiển thị trên map nào
+            center: {lat: center.lat, lng: center.lng}, // tạo độ trung tâm
+            radius: radius // bán kính
+        })
     }
 
     render() {

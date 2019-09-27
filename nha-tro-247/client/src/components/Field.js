@@ -11,21 +11,74 @@ import {
 import "./Field.css";
 import Field_Results_Item from "./Field_Results_Item";
 
+import { onPlaceAutocomplete, onSearchAddress } from './Maps'
+
+class SearchBar extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            city: '',
+            query: ''
+        }
+        this.autocompleteInput = React.createRef();
+        this.onChangeSearch = this.onChangeSearch.bind(this);
+    }
+
+    onChangeSearch(e) {
+        //onChangeSearchAddress(e.target.value);
+        if (e.which === 13 || e.which === 10) {
+            onSearchAddress(e.target.value, formattedAddress => {
+                // Set full address in search input
+                this.autocompleteInput.current.value = formattedAddress;
+            });
+        } else {
+            //this.handleScriptLoad();
+            //onPlaceAutocomplete(this.autocompleteInput.current)
+        }
+    }
+
+    componentDidMount() {
+        setTimeout(() => {
+            onPlaceAutocomplete(this.autocompleteInput.current, (addressObject) => {
+                //this.props.onPlaceLoaded(addressObject);
+                const address = addressObject.address_components;
+                if (address){
+                    this.setState({
+                        city: address[0].long_name,
+                        query: addressObject.formatted_address
+                    })
+                }
+            })
+        }, 2000);
+
+    }
+
+    render() {
+        return (
+            <Form.Control
+                ref={this.autocompleteInput}
+                id="autocomplete"
+                onKeyPress={this.onChangeSearch}
+                type="text"
+                placeholder="Tìm kiếm.."
+                className="input-search"
+                defaultValue={this.state.query}
+                />
+        )
+    }
+}
+
 export default class Fields extends Component {
     render() {
         return (
-            <div className="field">
+            <div className="field scroll square scrollbar-dusty-grass square thin">
                 <div className="field-filter">
                     <Form>
                         <Container>
                             <Row>
                                 <Col>
                                     <Form.Group className="form-group-custom">
-                                        <Form.Control
-                                            type="text"
-                                            placeholder="Tìm kiếm.."
-                                            className="input-search"
-                                        />
+                                        <SearchBar/>
                                     </Form.Group>
                                 </Col>
                             </Row>
@@ -127,12 +180,12 @@ export default class Fields extends Component {
                                     <Form.Group className="form-group-custom">
                                         <Form.Control as="select">
                                             <option>Tất cả</option>
-                                            <option>&lt; 20 m2</option>
-                                            <option>20 - 30 m2</option>
-                                            <option>30 - 40 m2</option>
-                                            <option>40 - 60 m2</option>
-                                            <option>60 - 100 m2</option>
-                                            <option>&gt; 100 m2</option>
+                                            <option>&lt; 20 m&#178;</option>
+                                            <option>20 - 30 m&sup2;</option>
+                                            <option>30 - 40 m&sup2;</option>
+                                            <option>40 - 60 m&sup2;</option>
+                                            <option>60 - 100 m&sup2;</option>
+                                            <option>&gt; 100 m&sup2;</option>
                                         </Form.Control>
                                     </Form.Group>
                                 </Col>
@@ -149,12 +202,12 @@ export default class Fields extends Component {
                                     <Form.Group className="form-group-custom">
                                         <Form.Control as="select">
                                             <option>Tất cả</option>
-                                            <option>&lt; 20 m2</option>
-                                            <option>20 - 30 m2</option>
-                                            <option>30 - 40 m2</option>
-                                            <option>40 - 60 m2</option>
-                                            <option>60 - 100 m2</option>
-                                            <option>&gt; 100 m2</option>
+                                            <option>&lt; 20 m</option>
+                                            <option>20 - 30 m</option>
+                                            <option>30 - 40 m</option>
+                                            <option>40 - 60 m</option>
+                                            <option>60 - 100 m</option>
+                                            <option>&gt; 100 m</option>
                                         </Form.Control>
                                     </Form.Group>
                                 </Col>
