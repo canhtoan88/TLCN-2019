@@ -4,7 +4,7 @@ import {Map, /*InfoWindow,*/ Marker, GoogleApiWrapper} from 'google-maps-react';
 
 import './Maps.css'
 
-let markers = [], currentDirection = null, circle = null;
+let markers = [], currentDirection = null, currentCircle = null;
 
 // No complete yet Autocomplete -- Not display autocomplete
 export function onPlaceAutocomplete (input, cb) {
@@ -49,11 +49,22 @@ export function onSearchAddress (address, cb) {
             }
         })
 
+        // Clear current circle if existing
+        if (currentCircle) {
+            currentCircle.setMap(null);
+            currentCircle = null;
+        }
         // Test draw a circle on map from center position 
         this.drawCircleFromCenter(this.state.currentLocation, 1000)
 
         // Show near hostels
-        this.showNearHostel();
+        const nearbyHostel = [
+            new this.props.google.maps.LatLng(10.8613154, 106.75557779999997),
+            new this.props.google.maps.LatLng(10.8513154, 106.76557779999997),
+            new this.props.google.maps.LatLng(10.8413154, 106.74557779999997),
+            new this.props.google.maps.LatLng(10.8433154, 106.75457779999997)
+        ]
+        this.showNearHostel(nearbyHostel);
 
         cb(results[0].formatted_address)
     })
@@ -168,27 +179,21 @@ export class MapContainer extends Component {
         }
     }
 
-    showNearHostel() {
+    showNearHostel(nearbyHostel) {
         this.clearNearHostel();
 
         const {google} = this.props;
         const maps = google.maps;
 
         // Add some new markers
-        const neighborhoods = [
-            new maps.LatLng(10.8613154, 106.75557779999997),
-            new maps.LatLng(10.8513154, 106.76557779999997),
-            new maps.LatLng(10.8413154, 106.74557779999997),
-            new maps.LatLng(10.8433154, 106.75457779999997)
-        ]
-        for (let i = 0; i < neighborhoods.length; i++) {
+        for (let i = 0; i < nearbyHostel.length; i++) {
             setTimeout(() => {
                 console.log();
                 markers.push(new maps.Marker({
                     name: 'Your location!',
                     map: this.map,
                     animation: maps.Animation.DROP,
-                    position: neighborhoods[i],
+                    position: nearbyHostel[i],
                     icon: {
                         url: 'logo.svg',
                         anchor: new maps.Point(32,32),
@@ -237,7 +242,7 @@ export class MapContainer extends Component {
     }
 
     drawCircleFromCenter(center, radius) {
-        circle = new this.props.google.maps.Circle({
+        currentCircle = new this.props.google.maps.Circle({
             strokeColor: '#888', // Màu viên
             strokeOpacity: 0.5, // Độ mờ viền
             strokeWeight: 1, // Độ mảnh của đường tròn
