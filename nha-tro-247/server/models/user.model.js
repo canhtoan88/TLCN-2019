@@ -1,18 +1,36 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-var options = {
+const options = {
     autoCreate: true
 };
 
 const userSchema = new Schema(
     {
-        fullname: String,
-        gender: Boolean,
-        age: Number
+        authorization: { type: Schema.Types.ObjectId, ref: "Authorization" },
+        fullname: {
+            firstname: {
+                type: String,
+                required: true,
+                maxlength: 20,
+                trim: true
+            },
+            lastname: {
+                type: String,
+                required: true,
+                maxlength: 20,
+                trim: true
+            }
+        },
+        phone: { type: String, maxlength: 20, trim: true, unique: true },
+        email: { type: String, maxlength: 30, trim: true, unique: true },
+        password: { type: String, required: true, maxlength: 30, trim: true },
+        address: { type: String, maxlength: 250, trim: true },
+        gender: { type: Boolean, default: false },
+        birthday: { type: Date },
+        timeRegister: { type: Date, required: true, default: Date.now }
     },
     options
 );
 
-const User = mongoose.model("User", userSchema);
-module.exports = User;
+module.exports = mongoose.model("User", userSchema);

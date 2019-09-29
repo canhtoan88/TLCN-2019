@@ -1,35 +1,56 @@
+.field {
+    margin: 0;
+    padding: 0;
+}
+
 .field-filter {
-    
+    margin: 0;
+    padding: 1em 1em;
 }
 
-.input-search {
-    margin-top: 20px;
+.field-filter-form-group-search {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
 }
 
-.input-label {
-    margin-bottom: 0px;
-    padding-left: 6px;
+.field-filter-form-group-search > img {
+    height: 2em;
 }
 
-.input-label2 {
-    margin-top: 6px;
+.field-filter-form-group-search > div {
+    width: 100%;
+    padding-left: 0.5em;
 }
 
-.form-group-custom {
-    margin-bottom: 10px;
+.field-filter-form-input-search {
+    border-radius: 20px;
+}
+
+.field-filter-form-label {
+    margin-bottom: 0.2em;
+}
+
+.field-hr {
+    margin: 0;
+}
+
+.field-results {
+    margin: 0;
+    padding: 1em 1em;
 }
 
 .field-results-title {
     color: #4caf50;
     font-weight: bold;
     text-transform: uppercase;
-    padding-top: 15px;
+    font-size: 1.3em;
 }
 
 .field-results-filter {
     text-align: right;
 }
 
-.hr-custom {
-    margin-top: 0px;
+.field-results-list {
+    padding: 1em 0;
 }

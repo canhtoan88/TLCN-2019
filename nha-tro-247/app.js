@@ -7,13 +7,15 @@ const mongoose = require("mongoose");
 var bodyParser = require("body-parser");
 
 var indexRouter = require("./server/routes/index");
-var usersRouter = require("./server/routes/users");
-var usersApi = require("./server/api/users.api");
+var databaseRouter = require("./server/routes/database");
+var citiesApi = require("./server/api/cities.api");
+var districtsApi = require("./server/api/districts.api");
+var authorizationsApi = require("./server/api/authorizations.api");
 
 var app = express();
 
 // Connect to MongoDB
-mongoose.connect("mongodb://localhost:27017/local", {
+mongoose.connect("mongodb://localhost:27017/db247hostel", {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
@@ -41,8 +43,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.use("/", indexRouter);
-app.use("/users", usersRouter);
-app.use("/api/users", usersApi);
+app.use("/database", databaseRouter);
+app.use("/api/cities", citiesApi);
+app.use("/api/districts", districtsApi);
+app.use("/api/authorizations", authorizationsApi);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -60,4 +64,6 @@ app.use(function(err, req, res, next) {
     res.render("error");
 });
 
-app.listen(5000);
+app.listen(5000, () => {
+    console.log("Server starting..");
+});

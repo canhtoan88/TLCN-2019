@@ -1,0 +1,21 @@
+.logo {
+    width: 100%;
+    height: 2.2em;
+    padding: 0.2em 0;
+    background-color: #4caf50;
+    text-align: center;
+}
+
+.logo:hover {
+    cursor: pointer;
+}
+
+.logo-image {
+    height: 1.6em;
+}
+
+.logo-title {
+    margin-left: 0.2em;
+    font-weight: bold;
+    color: #fff;
+}

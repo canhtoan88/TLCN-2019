@@ -1,220 +1,324 @@
 import React, { Component } from "react";
-import {
-    Container,
-    Form,
-    Row,
-    Col,
-    DropdownButton,
-    Dropdown
-} from "react-bootstrap";
+import { Form, Row, Col, DropdownButton, Dropdown } from "react-bootstrap";
 
 import "./Field.css";
 import Field_Results_Item from "./Field_Results_Item";
+import Footer from "./Footer";
+
+const prices = [
+    { min: 0, max: 2000000 },
+    { min: 2000000, max: 3000000 },
+    { min: 3000000, max: 4000000 },
+    { min: 4000000, max: 6000000 },
+    { min: 6000000, max: 1000000 },
+    { min: 10000000, max: 999000000 }
+];
+const spaces = [
+    { min: 0, max: 20 },
+    { min: 20, max: 30 },
+    { min: 30, max: 40 },
+    { min: 40, max: 60 },
+    { min: 60, max: 100 },
+    { min: 100, max: 999 }
+];
+const distances = [2, 5, 10, 15, 20, 30];
 
 export default class Fields extends Component {
+    constructor() {
+        super();
+        this.state = {
+            cities: [],
+            districts: [],
+            searchFilter: "",
+            cityFilter: {},
+            districtFilter: {},
+            priceFilter: {},
+            spaceFilter: {},
+            distanceFilter: 0
+        };
+
+        this.onSearchKeyUp = this.onSearchKeyUp.bind(this);
+        this.onCitySelectChange = this.onCitySelectChange.bind(this);
+        this.onDistrictSelectChange = this.onDistrictSelectChange.bind(this);
+        this.onPriceSelectChange = this.onPriceSelectChange.bind(this);
+        this.onSpaceSelectChange = this.onSpaceSelectChange.bind(this);
+        this.onDistanceSelectChange = this.onDistanceSelectChange.bind(this);
+    }
+
+    componentDidMount() {
+        // Get cities
+        fetch("/api/cities")
+            .then(res => res.json())
+            .then(cities => this.setState({ 
+                cities: cities 
+            }));
+    }
+
+    componentDidUpdate() {
+        const filterValue = {
+            searchFilter: this.state.searchFilter,
+            cityFilter: this.state.cityFilter,
+            districtFilter: this.state.districtFilter,
+            priceFilter: this.state.priceFilter,
+            spaceFilter: this.state.spaceFilter,
+            distanceFilter: this.state.distanceFilter
+        }
+        console.log(filterValue);
+    }
+
+    onSearchKeyUp(e) {
+        if (e.keyCode === 13) {
+            this.setState({
+                searchFilter: e.target.value.trim(),
+            });
+        }
+    }
+
+    onCitySelectChange(e) {
+        if (e.target.value) {
+
+            // Get city by id
+            fetch("/api/cities/" + e.target.value)
+                .then(res => res.json())
+                .then(city => {
+                    this.setState({
+                        cityFilter: city,
+                        districtFilter: {}
+                    });
+
+                    // Get districts by city
+                    fetch("/api/districts/cities/" + city._id)
+                        .then(res => res.json())
+                        .then(districts => {
+                            this.setState({
+                                districts: districts
+                            });
+
+                            // Refresh district select
+                            document.getElementById(
+                                "districts-select"
+                            ).selectedIndex = 0;
+                        });
+                });
+        }
+    }
+
+    onDistrictSelectChange(e) {
+        if (e.target.value) {
+
+            // Get district by id
+            fetch("/api/districts/" + e.target.value)
+                .then(res => res.json())
+                .then(district => {
+                    this.setState({
+                        districtFilter: district
+                    });
+                });
+        }
+    }
+
+    onPriceSelectChange(e) {
+        this.setState({
+            priceFilter: prices[e.target.value]
+        })
+    }
+
+    onSpaceSelectChange(e) {
+        this.setState({
+            spaceFilter: spaces[e.target.value]
+        })
+    }
+
+    onDistanceSelectChange(e) {
+        this.setState({
+            distanceFilter: distances[e.target.value]
+        })
+    }
+
     render() {
         return (
             <div className="field">
                 <div className="field-filter">
-                    <Form>
-                        <Container>
-                            <Row>
-                                <Col>
-                                    <Form.Group className="form-group-custom">
-                                        <Form.Control
-                                            type="text"
-                                            placeholder="Tìm kiếm.."
-                                            className="input-search"
-                                        />
-                                    </Form.Group>
-                                </Col>
-                            </Row>
-                        </Container>
-                        <Container>
-                            <Row>
-                                <Col sm={12} md={6}>
-                                    <Form.Group className="form-group-custom">
-                                        <Form.Label className="input-label">
-                                            Tỉnh/Thành phố
-                                        </Form.Label>
-                                        <Form.Control as="select">
-                                            <option>Tỉnh/Thành phố</option>
-                                            <option>1</option>
-                                            <option>2</option>
-                                            <option>3</option>
-                                            <option>4</option>
-                                            <option>5</option>
-                                        </Form.Control>
-                                    </Form.Group>
-                                </Col>
-                                <Col sm={12} md={6}>
-                                    <Form.Group className="form-group-custom">
-                                        <Form.Label className="input-label">
-                                            Quận/Huyện
-                                        </Form.Label>
-                                        <Form.Control as="select">
-                                            <option>Quận/Huyện</option>
-                                            <option>1</option>
-                                            <option>2</option>
-                                            <option>3</option>
-                                            <option>4</option>
-                                            <option>5</option>
-                                        </Form.Control>
-                                    </Form.Group>
-                                </Col>
-                            </Row>
-                        </Container>
-                        <Container>
-                            <Row>
-                                <Col sm={12} md={6}>
-                                    <Form.Group className="form-group-custom">
-                                        <Form.Label className="input-label">
-                                            Tên đường
-                                        </Form.Label>
-                                        <Form.Control as="select">
-                                            <option>Tên đường</option>
-                                            <option>1</option>
-                                            <option>2</option>
-                                            <option>3</option>
-                                            <option>4</option>
-                                            <option>5</option>
-                                        </Form.Control>
-                                    </Form.Group>
-                                </Col>
-                                <Col sm={12} md={6}>
-                                    <Form.Group className="form-group-custom">
-                                        <Form.Label className="input-label">
-                                            Số nhà
-                                        </Form.Label>
-                                        <Form.Control
-                                            type="text"
-                                            placeholder="Số nhà.."
-                                        />
-                                    </Form.Group>
-                                </Col>
-                            </Row>
-                        </Container>
-                        <Container>
-                            <Row>
-                                <Col md={3} xs={4}>
-                                    <Form.Label className="input-label input-label2">
-                                        Giá thuê
-                                    </Form.Label>
-                                </Col>
-                                <Col md={9} xs={8}>
-                                    <Form.Group className="form-group-custom">
-                                        <Form.Control as="select">
-                                            <option>Tất cả</option>
-                                            <option>&lt; 2 tr</option>
-                                            <option>2 - 3 tr</option>
-                                            <option>3 - 4 tr</option>
-                                            <option>4 - 6 tr</option>
-                                            <option>6 - 10 tr</option>
-                                            <option>&gt; 10 tr</option>
-                                        </Form.Control>
-                                    </Form.Group>
-                                </Col>
-                            </Row>
-                        </Container>
-                        <Container>
-                            <Row>
-                                <Col md={3} xs={4}>
-                                    <Form.Label className="input-label input-label2">
-                                        Diện tích
-                                    </Form.Label>
-                                </Col>
-                                <Col md={9} xs={8}>
-                                    <Form.Group className="form-group-custom">
-                                        <Form.Control as="select">
-                                            <option>Tất cả</option>
-                                            <option>&lt; 20 m2</option>
-                                            <option>20 - 30 m2</option>
-                                            <option>30 - 40 m2</option>
-                                            <option>40 - 60 m2</option>
-                                            <option>60 - 100 m2</option>
-                                            <option>&gt; 100 m2</option>
-                                        </Form.Control>
-                                    </Form.Group>
-                                </Col>
-                            </Row>
-                        </Container>
-                        <Container>
-                            <Row>
-                                <Col md={3} xs={4}>
-                                    <Form.Label className="input-label input-label2">
-                                        Bán kính
-                                    </Form.Label>
-                                </Col>
-                                <Col md={9} xs={8}>
-                                    <Form.Group className="form-group-custom">
-                                        <Form.Control as="select">
-                                            <option>Tất cả</option>
-                                            <option>&lt; 20 m2</option>
-                                            <option>20 - 30 m2</option>
-                                            <option>30 - 40 m2</option>
-                                            <option>40 - 60 m2</option>
-                                            <option>60 - 100 m2</option>
-                                            <option>&gt; 100 m2</option>
-                                        </Form.Control>
-                                    </Form.Group>
-                                </Col>
-                            </Row>
-                        </Container>
-                    </Form>
-                    <hr className="hr-custom" />
-                    <div className="field-results">
-                        <Container>
-                            <Row>
-                                <Col className="field-results-title">
-                                    <span>Kết quả</span>
-                                </Col>
-                                <Col className="field-results-filter">
-                                    <DropdownButton
-                                        alignRight
-                                        title="Mới nhất"
-                                        variant="success"
-                                        className="field-results-filter"
-                                    >
-                                        <Dropdown.Item eventKey="1">
-                                            Mới nhất
-                                        </Dropdown.Item>
-                                        <Dropdown.Item eventKey="2">
-                                            Giá tăng dần
-                                        </Dropdown.Item>
-                                        <Dropdown.Item eventKey="3">
-                                            Giá giảm dần
-                                        </Dropdown.Item>
-                                        <Dropdown.Item eventKey="2">
-                                            Diện tích tăng dần
-                                        </Dropdown.Item>
-                                        <Dropdown.Item eventKey="3">
-                                            Diện tích giảm dần
-                                        </Dropdown.Item>
-                                        <Dropdown.Item eventKey="2">
-                                            Bán kính tăng dần
-                                        </Dropdown.Item>
-                                        <Dropdown.Item eventKey="3">
-                                            Bán kính giảm dần
-                                        </Dropdown.Item>
-                                    </DropdownButton>
-                                </Col>
-                            </Row>
-                            <hr className="hr-custom" />
-                        </Container>
-                        <Container>
-                            <Field_Results_Item />
-                            <Field_Results_Item />
-                            <Field_Results_Item />
-                            <Field_Results_Item />
-                            <Field_Results_Item />
-                            <Field_Results_Item />
-                            <Field_Results_Item />
-                            <Field_Results_Item />
-                            <Field_Results_Item />
-                            <Field_Results_Item />
-                        </Container>
+                    <Row>
+                        <Col>
+                            <Form.Group className="field-filter-form-group-search">
+                                <img alt="" src="icons/search.svg"></img>
+                                <div>
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Tìm kiếm.."
+                                        className="field-filter-form-input-search"
+                                        onKeyUp={this.onSearchKeyUp}
+                                    />
+                                </div>
+                            </Form.Group>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col sm={6}>
+                            <Form.Group>
+                                <Form.Label className="field-filter-form-label">
+                                    Tỉnh/Thành phố
+                                </Form.Label>
+                                <Form.Control
+                                    as="select"
+                                    onChange={this.onCitySelectChange}
+                                >
+                                    <option value="null">Tỉnh/Thành phố</option>
+                                    {this.state.cities.map(city => (
+                                        <option key={city._id} value={city._id}>
+                                            {city.name}
+                                        </option>
+                                    ))}
+                                </Form.Control>
+                            </Form.Group>
+                        </Col>
+                        <Col sm={6}>
+                            <Form.Group>
+                                <Form.Label className="field-filter-form-label">
+                                    Quận/Huyện
+                                </Form.Label>
+                                <Form.Control
+                                    as="select"
+                                    id="districts-select"
+                                    onChange={this.onDistrictSelectChange}
+                                >
+                                    <option value="null">Quận/Huyện</option>
+                                    {this.state.districts.length > 0 && 
+                                        this.state.districts.map(district => (
+                                            <option
+                                                key={district._id}
+                                                value={district._id}
+                                            >
+                                                {district.name}
+                                            </option>
+                                    ))}
+                                </Form.Control>
+                            </Form.Group>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col sm={4}>
+                            <label className="field-filter-form-label">
+                                Giá thuê
+                            </label>
+                        </Col>
+                        <Col sm={8}>
+                            <Form.Group>
+                                <Form.Control 
+                                    as="select" 
+                                    onChange={this.onPriceSelectChange}
+                                >
+                                    <option value={-1}>Tất cả</option>
+                                    <option value={0}>&lt; 2 tr</option>
+                                    <option value={1}>2 - 3 tr</option>
+                                    <option value={2}>3 - 4 tr</option>
+                                    <option value={3}>4 - 6 tr</option>
+                                    <option value={4}>6 - 10 tr</option>
+                                    <option value={5}>&gt; 10 tr</option>
+                                </Form.Control>
+                            </Form.Group>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col sm={4}>
+                            <label className="field-filter-form-label">
+                                Diện tích
+                            </label>
+                        </Col>
+                        <Col sm={8}>
+                            <Form.Group>
+                                <Form.Control 
+                                    as="select"
+                                    onChange={this.onSpaceSelectChange}
+                                >
+                                    <option value={-1}>Tất cả</option>
+                                    <option value={0}>&lt; 20 m2</option>
+                                    <option value={1}>20 - 30 m2</option>
+                                    <option value={2}>30 - 40 m2</option>
+                                    <option value={3}>40 - 60 m2</option>
+                                    <option value={4}>60 - 100 m2</option>
+                                    <option value={5}>&gt; 100 m2</option>
+                                </Form.Control>
+                            </Form.Group>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col sm={4}>
+                            <label className="field-filter-form-label">
+                                Bán kính
+                            </label>
+                        </Col>
+                        <Col sm={8}>
+                            <Form.Group>
+                                <Form.Control 
+                                    as="select"
+                                    onChange={this.onDistanceSelectChange}
+                                >
+                                    <option value={-1}>Tất cả</option>
+                                    <option value={0}>2 km</option>
+                                    <option value={1}>5 km</option>
+                                    <option value={2}>10 km</option>
+                                    <option value={3}>15 km</option>
+                                    <option value={4}>20 km</option>
+                                    <option value={5}>30 km</option>
+                                </Form.Control>
+                            </Form.Group>
+                        </Col>
+                    </Row>
+                </div>
+                <hr className="field-hr" />
+                <div className="field-results">
+                    <Row>
+                        <Col className="field-results-title">
+                            <span>Kết quả</span>
+                        </Col>
+                        <Col className="field-results-filter">
+                            <DropdownButton
+                                alignRight
+                                title="Mới nhất"
+                                variant="success"
+                            >
+                                <Dropdown.Item eventKey="1">
+                                    Mới nhất
+                                </Dropdown.Item>
+                                <Dropdown.Item eventKey="2">
+                                    Giá tăng dần
+                                </Dropdown.Item>
+                                <Dropdown.Item eventKey="3">
+                                    Giá giảm dần
+                                </Dropdown.Item>
+                                <Dropdown.Item eventKey="2">
+                                    Diện tích tăng dần
+                                </Dropdown.Item>
+                                <Dropdown.Item eventKey="3">
+                                    Diện tích giảm dần
+                                </Dropdown.Item>
+                                <Dropdown.Item eventKey="2">
+                                    Bán kính tăng dần
+                                </Dropdown.Item>
+                                <Dropdown.Item eventKey="3">
+                                    Bán kính giảm dần
+                                </Dropdown.Item>
+                            </DropdownButton>
+                        </Col>
+                    </Row>
+                    <hr className="field-hr" />
+                    <div className="field-results-list">
+                        <Field_Results_Item />
+                        <Field_Results_Item />
+                        <Field_Results_Item />
+                        <Field_Results_Item />
+                        <Field_Results_Item />
+                        <Field_Results_Item />
+                        <Field_Results_Item />
+                        <Field_Results_Item />
+                        <Field_Results_Item />
+                        <Field_Results_Item />
                     </div>
                 </div>
+                <hr className="field-hr" />
+                <Footer />
             </div>
         );
     }
