@@ -11,13 +11,16 @@ var databaseRouter = require("./server/routes/database");
 var citiesApi = require("./server/api/cities.api");
 var districtsApi = require("./server/api/districts.api");
 var authorizationsApi = require("./server/api/authorizations.api");
+var usersApi = require("./server/api/users.api");
+var avatarsApi = require("./server/api/avatar.api");
 
 var app = express();
 
 // Connect to MongoDB
 mongoose.connect("mongodb://localhost:27017/db247hostel", {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    useCreateIndex: true
 });
 var db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));
@@ -25,10 +28,6 @@ db.once("open", function() {
     // we're connected!
     console.log("Database connected");
 });
-
-// view engine setup
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "ejs");
 
 app.use(logger("dev"));
 app.use(express.json());
@@ -47,6 +46,8 @@ app.use("/database", databaseRouter);
 app.use("/api/cities", citiesApi);
 app.use("/api/districts", districtsApi);
 app.use("/api/authorizations", authorizationsApi);
+app.use("/api/users", usersApi);
+app.use("/api/avatars", avatarsApi);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -10,7 +10,7 @@ const hostelSchema = new Schema(
         user: { type: Schema.Types.ObjectId, ref: "User" },
         city: { type: Schema.Types.ObjectId, ref: "City" },
         district: { type: Schema.Types.ObjectId, ref: "District" },
-        street: { type: Schema.Types.ObjectId, ref: "Street" },
+        street: { type: String, required: true, maxlength: 50, trim: true },
         location: {
             type: {
                 type: String,

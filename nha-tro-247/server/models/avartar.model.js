@@ -8,7 +8,7 @@ const options = {
 const avatarSchema = new Schema(
     {
         user: { type: Schema.Types.ObjectId, ref: 'User' },
-        url: { type: String, required: true, maxlength: 250, trim: true }
+        url: { type: String, required: true, maxlength: 300, trim: true }
     },
     options
 );

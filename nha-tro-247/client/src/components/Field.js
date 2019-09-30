@@ -4,6 +4,7 @@ import { Form, Row, Col, DropdownButton, Dropdown } from "react-bootstrap";
 import "./Field.css";
 import Field_Results_Item from "./Field_Results_Item";
 import Footer from "./Footer";
+import { onPlaceAutocomplete, onSearchAddress } from './Maps'
 
 const prices = [
     { min: 0, max: 2000000 },
@@ -23,7 +24,6 @@ const spaces = [
 ];
 const distances = [2, 5, 10, 15, 20, 30];
 
-import { onPlaceAutocomplete, onSearchAddress } from './Maps'
 
 class SearchBar extends Component {
     constructor(props) {

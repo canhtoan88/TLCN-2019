@@ -24,7 +24,7 @@ const userSchema = new Schema(
         },
         phone: { type: String, maxlength: 20, trim: true, unique: true },
         email: { type: String, maxlength: 30, trim: true, unique: true },
-        password: { type: String, required: true, maxlength: 30, trim: true },
+        password: { type: String, required: true, maxlength: 50, trim: true },
         address: { type: String, maxlength: 250, trim: true },
         gender: { type: Boolean, default: false },
         birthday: { type: Date },
