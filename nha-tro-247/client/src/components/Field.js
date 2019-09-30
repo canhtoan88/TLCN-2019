@@ -23,6 +23,63 @@ const spaces = [
 ];
 const distances = [2, 5, 10, 15, 20, 30];
 
+import { onPlaceAutocomplete, onSearchAddress } from './Maps'
+
+class SearchBar extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            city: '',
+            query: ''
+        }
+        this.autocompleteInput = React.createRef();
+        this.onChangeSearch = this.onChangeSearch.bind(this);
+    }
+
+    onChangeSearch(e) {
+        //onChangeSearchAddress(e.target.value);
+        if (e.which === 13 || e.which === 10) {
+            onSearchAddress(e.target.value, formattedAddress => {
+                // Set full address in search input
+                this.autocompleteInput.current.value = formattedAddress;
+            });
+        } else {
+            //this.handleScriptLoad();
+            //onPlaceAutocomplete(this.autocompleteInput.current)
+        }
+    }
+
+    componentDidMount() {
+        setTimeout(() => {
+            onPlaceAutocomplete(this.autocompleteInput.current, (addressObject) => {
+                //this.props.onPlaceLoaded(addressObject);
+                const address = addressObject.address_components;
+                if (address){
+                    this.setState({
+                        city: address[0].long_name,
+                        query: addressObject.formatted_address
+                    })
+                }
+            })
+        }, 2000);
+
+    }
+
+    render() {
+        return (
+            <Form.Control
+                ref={this.autocompleteInput}
+                id="autocomplete"
+                onKeyPress={this.onChangeSearch}
+                type="text"
+                placeholder="Tìm kiếm.."
+                className="input-search"
+                defaultValue={this.state.query}
+                />
+        )
+    }
+}
+
 export default class Fields extends Component {
     constructor() {
         super();
@@ -137,7 +194,7 @@ export default class Fields extends Component {
 
     render() {
         return (
-            <div className="field">
+            <div className="field scroll square scrollbar-dusty-grass square thin">
                 <div className="field-filter">
                     <Row>
                         <Col>
