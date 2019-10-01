@@ -6,6 +6,7 @@ const districtsCollection = require("../test/defaultDatabase/defaultDistrictColl
 const authorizationCollection = require("../test/defaultDatabase/defaultAuthorizationCollection");
 const userCollection = require("../test/defaultDatabase/defaultUserCollection");
 const avatarCollection = require("../test/defaultDatabase/defaultAvatarCollection");
+const hostelCollection = require("../test/defaultDatabase/defaultHostelCollection");
 
 /* GET home page. */
 router.get("/", function(req, res, next) {
@@ -15,6 +16,7 @@ router.get("/", function(req, res, next) {
     authorizationCollection.createDefaultCollection();
     userCollection.createDefaultCollection();
     avatarCollection.createDefaultCollection();
+    hostelCollection.createDefaultCollection();
 
     res.send("Check server console.log");
 });

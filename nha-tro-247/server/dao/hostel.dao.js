@@ -1,10 +1,12 @@
-const Model = require("../models/user.model");
+const Model = require("../models/hostel.model");
 
 module.exports = {
     find: () => {
         return new Promise((resolve, reject) => {
             Model.find({})
-                .populate("authorization")
+                .populate("user")
+                .populate("city")
+                .populate("district")
                 .exec((err, results) => {
                     if (err) return reject(null);
                     return resolve(results);
@@ -14,37 +16,9 @@ module.exports = {
     findById: id => {
         return new Promise((resolve, reject) => {
             Model.findById(id)
-                .populate("authorization")
-                .exec((err, result) => {
-                    if (err) return reject(null);
-                    return resolve(result);
-                });
-        }).catch(() => null);
-    },
-    findByName: name => {
-        return new Promise((resolve, reject) => {
-            Model.find({ name: name })
-                .populate("authorization")
-                .exec((err, result) => {
-                    if (err) return reject(null);
-                    return resolve(result);
-                });
-        }).catch(() => null);
-    },
-    findOneByEmail: email => {
-        return new Promise((resolve, reject) => {
-            Model.find({ email: email })
-                .populate("authorization")
-                .exec((err, result) => {
-                    if (err) return reject(null);
-                    return resolve(result);
-                });
-        }).catch(() => null);
-    },
-    findOneByPhone: phone => {
-        return new Promise((resolve, reject) => {
-            Model.find({ phone: phone })
-                .populate("authorization")
+                .populate("user")
+                .populate("city")
+                .populate("district")
                 .exec((err, result) => {
                     if (err) return reject(null);
                     return resolve(result);
