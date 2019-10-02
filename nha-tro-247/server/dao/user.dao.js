@@ -63,7 +63,27 @@ module.exports = {
         return new Promise((resolve, reject) => {
             Model.findByIdAndUpdate(
                 model._id,
-                {},
+                {
+
+                },
+                { new: true },
+                (err, result) => {
+                    if (err) return reject(null);
+                    return resolve(result);
+                }
+            );
+        }).catch(() => null);
+    },
+    addAvatar: (user, avatarUrl) => {
+        let avatarUrls = user.avatars;
+        avatarUrls.push(avatarUrl);
+
+        return new Promise((resolve, reject) => {
+            Model.findByIdAndUpdate(
+                user._id,
+                {
+                    avatars: avatarUrls
+                },
                 { new: true },
                 (err, result) => {
                     if (err) return reject(null);
