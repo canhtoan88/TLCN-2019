@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.org/dtd/hibernate-reverse-engineering-3.0.dtd" >
+
+<hibernate-reverse-engineering>
+  <table-filter match-catalog="db247hostel" match-name="authorization"/>
+  <table-filter match-catalog="db247hostel" match-name="avatar"/>
+  <table-filter match-catalog="db247hostel" match-name="city"/>
+  <table-filter match-catalog="db247hostel" match-name="comment"/>
+  <table-filter match-catalog="db247hostel" match-name="conversation"/>
+  <table-filter match-catalog="db247hostel" match-name="department"/>
+  <table-filter match-catalog="db247hostel" match-name="district"/>
+  <table-filter match-catalog="db247hostel" match-name="employee"/>
+  <table-filter match-catalog="db247hostel" match-name="hostel"/>
+  <table-filter match-catalog="db247hostel" match-name="image"/>
+  <table-filter match-catalog="db247hostel" match-name="message"/>
+  <table-filter match-catalog="db247hostel" match-name="rate"/>
+  <table-filter match-catalog="db247hostel" match-name="reply_comment"/>
+  <table-filter match-catalog="db247hostel" match-name="street"/>
+  <table-filter match-catalog="db247hostel" match-name="user"/>
+  <table-filter match-catalog="db247hostel" match-name="video"/>
+  <table-filter match-catalog="db247hostel" match-name="vip_hostel"/>
+</hibernate-reverse-engineering>
