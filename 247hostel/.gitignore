@@ -1,0 +1,2 @@
+# Not push node_modules folder to github
+/src/main/webapp/WEB-INF/resources
