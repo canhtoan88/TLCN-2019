@@ -1,5 +1,5 @@
 package com.huupham.entities;
-// Generated Oct 13, 2019, 8:16:52 PM by Hibernate Tools 4.3.5.Final
+// Generated Oct 20, 2019 3:14:09 PM by Hibernate Tools 4.3.5.Final
 
 import java.util.Date;
 import java.util.HashSet;
@@ -7,6 +7,8 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -23,7 +25,7 @@ import javax.persistence.Version;
 @Table(name = "hostel", catalog = "db247hostel")
 public class Hostel implements java.io.Serializable {
 
-	private int id;
+	private Integer id;
 	private Date timestamp;
 	private City city;
 	private District district;
@@ -47,9 +49,8 @@ public class Hostel implements java.io.Serializable {
 	public Hostel() {
 	}
 
-	public Hostel(int id, City city, District district, Street street, User user, String hostelNumber, int price,
-			int space, String title, String description, boolean isRented, int isCensored) {
-		this.id = id;
+	public Hostel(City city, District district, Street street, User user, String hostelNumber, int price, int space,
+			String title, String description, boolean isRented, int isCensored) {
 		this.city = city;
 		this.district = district;
 		this.street = street;
@@ -63,11 +64,9 @@ public class Hostel implements java.io.Serializable {
 		this.isCensored = isCensored;
 	}
 
-	public Hostel(int id, City city, District district, Street street, User user, String hostelNumber, int price,
-			int space, String title, String description, boolean isRented, int isCensored, Float locationLat,
-			Float locationLng, Set<Comment> comments, Set<Image> images, Set<Rate> rates, Set<Video> videos,
-			Set<VipHostel> vipHostels) {
-		this.id = id;
+	public Hostel(City city, District district, Street street, User user, String hostelNumber, int price, int space,
+			String title, String description, boolean isRented, int isCensored, Float locationLat, Float locationLng,
+			Set<Comment> comments, Set<Image> images, Set<Rate> rates, Set<Video> videos, Set<VipHostel> vipHostels) {
 		this.city = city;
 		this.district = district;
 		this.street = street;
@@ -89,13 +88,14 @@ public class Hostel implements java.io.Serializable {
 	}
 
 	@Id
+	@GeneratedValue(strategy = IDENTITY)
 
 	@Column(name = "id", unique = true, nullable = false)
-	public int getId() {
+	public Integer getId() {
 		return this.id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

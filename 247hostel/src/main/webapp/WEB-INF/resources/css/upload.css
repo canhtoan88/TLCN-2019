@@ -1,0 +1,169 @@
+﻿
+#fileupload {
+}
+
+#spanLuuY {
+    padding-top: 8px;
+    padding-bottom: 5px;
+    color: #fc0000;
+    display: block;
+}
+
+.upload-item {
+    position: relative;
+}
+
+    .upload-item .upload-item-delete,
+    .upload-item .upload-item-rotate {
+        position: absolute;
+    }
+
+.default-theme .upload-item {
+    width: 95px;
+    height: 95px;
+    overflow: hidden;
+    float: left;
+    margin: 5px 15px;
+}
+
+.default-theme #secleimg {
+    /*background: url('../images/icon_upload.png') no-repeat 10px 6px #015f95;*/
+    width: 75px;
+    height: 30px;
+    border-radius: 3px;
+    color: #015f95;
+    padding-left: 38px;
+    line-height: 30px;
+    cursor: pointer;
+    text-indent: -99999px;
+    z-index: -99;
+    width: 0;
+    background: #fff;
+}
+
+.default-theme .working-upload-item {
+    background: url('../images/icon_upload2.png') no-repeat;
+    width: 95px;
+    height: 95px;   
+    color: #fff;
+    padding-left: 38px;
+    line-height: 30px;
+    cursor: pointer;
+}
+
+
+.default-theme .upload-item-loading {
+    background: url('../images/upload-loading.gif') no-repeat scroll center;
+}
+
+.default-theme .upload-item .upload-item-delete {
+    background: url('../images/avatar-tool-delete.png') no-repeat;
+    width: 20px;
+    height: 20px;
+    right: 0;
+    top: 0;
+    border: 0;
+}
+
+.default-theme .upload-item .upload-item-rotate {
+    background: url('../images/upload-tool-rotation.png') no-repeat;
+    width: 24px;
+    height: 24px;
+    left: 1px;
+    top: 1px;
+    border: 0;
+}
+
+.default-theme .fileuploadie7 {
+    opacity: 0;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+    filter: alpha(opacity=0);
+    width: 90px;
+    height: 90px;
+    display: block;
+    cursor: pointer;
+}
+/*for ie7*/
+.default-theme .upload-item img.background {
+    width: 90px;
+    height: 90px;
+}
+/*------Upload Avatar--------*/
+.avatar-upload {
+    margin-left: 200px;
+}
+
+.avatar-item {
+    display: none;
+    width: 94px;
+    height: 94px;
+    overflow: hidden;
+    float: left;
+    margin-right: 4px;
+    position: relative;
+    background-color: transparent;
+    background-size: 94px 94px;
+}
+
+.no-avatar {
+    width: 94px;
+    height: 94px;
+    overflow: hidden;
+    float: left;
+    margin-right: 4px;
+    position: relative;
+    background: url('/Styles/Images/avatar-default.png') no-repeat scroll 0% 0%;
+    background-color: transparent;
+    background-size: 94px 94px;
+}
+
+
+.avatar-item .upload-item-delete,
+.avatar-item .upload-item-rotate {
+    position: absolute;
+}
+
+.avatar-item img.background {
+    width: 90px;
+    height: 90px;
+}
+
+.avatar-item .upload-item-delete {
+    background: url('../images/avatar-tool-delete.png') no-repeat;
+    width: 20px;
+    height: 20px;
+    right: 0;
+    top: 0;
+    border: 0;
+}
+
+.avatar-item .upload-item-rotate {
+    background: url('../images/upload-tool-rotation.png') no-repeat;
+    width: 24px;
+    height: 24px;
+    left: 1px;
+    top: 1px;
+    border: 0;
+}
+
+.avatar-upload-item {
+    background: #37a244;
+    padding: 6px 0;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    float: left;
+    height: 26px;
+    width: 112px;
+    font: normal 14px/24px tahoma;
+    margin: 56px 14px 0;
+}
+
+    .avatar-upload-item:hover {
+        background: #059216;
+    }
+
+.avatar-upload .upload-item-loading {
+    background: url('../images/upload-loading.gif') no-repeat scroll center;
+}

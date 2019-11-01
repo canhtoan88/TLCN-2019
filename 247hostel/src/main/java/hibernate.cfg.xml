@@ -10,7 +10,8 @@
         <property name="hibernate.connection.username">root</property>
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
         <property name="hibernate.search.autoregister_listeners">true</property>
-        <property name="hibernate.validator.apply_to_ddl">false</property>
+        <property name="hibernate.validator.apply_to_ddl">false</property>      
+     	<property name="current_session_context_class">thread</property>
         <mapping class="com.huupham.entities.Message" />
         <mapping class="com.huupham.entities.Department" />
         <mapping class="com.huupham.entities.Comment" />

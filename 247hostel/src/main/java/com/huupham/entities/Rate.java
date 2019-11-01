@@ -1,10 +1,12 @@
 package com.huupham.entities;
-// Generated Oct 13, 2019, 8:16:52 PM by Hibernate Tools 4.3.5.Final
+// Generated Oct 20, 2019 3:14:09 PM by Hibernate Tools 4.3.5.Final
 
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -20,7 +22,7 @@ import javax.persistence.Version;
 @Table(name = "rate", catalog = "db247hostel")
 public class Rate implements java.io.Serializable {
 
-	private int id;
+	private Integer id;
 	private Date timestamp;
 	private Hostel hostel;
 	private User user;
@@ -29,21 +31,21 @@ public class Rate implements java.io.Serializable {
 	public Rate() {
 	}
 
-	public Rate(int id, Hostel hostel, User user, int rate) {
-		this.id = id;
+	public Rate(Hostel hostel, User user, int rate) {
 		this.hostel = hostel;
 		this.user = user;
 		this.rate = rate;
 	}
 
 	@Id
+	@GeneratedValue(strategy = IDENTITY)
 
 	@Column(name = "id", unique = true, nullable = false)
-	public int getId() {
+	public Integer getId() {
 		return this.id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

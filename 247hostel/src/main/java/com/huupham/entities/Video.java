@@ -1,9 +1,11 @@
 package com.huupham.entities;
-// Generated Oct 13, 2019, 8:16:52 PM by Hibernate Tools 4.3.5.Final
+// Generated Oct 20, 2019 3:14:09 PM by Hibernate Tools 4.3.5.Final
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -16,27 +18,27 @@ import javax.persistence.Table;
 @Table(name = "video", catalog = "db247hostel")
 public class Video implements java.io.Serializable {
 
-	private int id;
+	private Integer id;
 	private Hostel hostel;
 	private String url;
 
 	public Video() {
 	}
 
-	public Video(int id, Hostel hostel, String url) {
-		this.id = id;
+	public Video(Hostel hostel, String url) {
 		this.hostel = hostel;
 		this.url = url;
 	}
 
 	@Id
+	@GeneratedValue(strategy = IDENTITY)
 
 	@Column(name = "id", unique = true, nullable = false)
-	public int getId() {
+	public Integer getId() {
 		return this.id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

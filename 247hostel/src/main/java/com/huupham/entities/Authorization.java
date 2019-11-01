@@ -1,11 +1,13 @@
 package com.huupham.entities;
-// Generated Oct 13, 2019, 8:16:52 PM by Hibernate Tools 4.3.5.Final
+// Generated Oct 20, 2019 3:14:09 PM by Hibernate Tools 4.3.5.Final
 
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -17,31 +19,27 @@ import javax.persistence.Table;
 @Table(name = "authorization", catalog = "db247hostel")
 public class Authorization implements java.io.Serializable {
 
-	private int id;
+	private Integer id;
 	private String name;
 	private Set<User> users = new HashSet<User>(0);
 
 	public Authorization() {
 	}
 
-	public Authorization(int id) {
-		this.id = id;
-	}
-
-	public Authorization(int id, String name, Set<User> users) {
-		this.id = id;
+	public Authorization(String name, Set<User> users) {
 		this.name = name;
 		this.users = users;
 	}
 
 	@Id
+	@GeneratedValue(strategy = IDENTITY)
 
 	@Column(name = "id", unique = true, nullable = false)
-	public int getId() {
+	public Integer getId() {
 		return this.id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

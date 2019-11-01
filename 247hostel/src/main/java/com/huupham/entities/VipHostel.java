@@ -1,10 +1,12 @@
 package com.huupham.entities;
-// Generated Oct 13, 2019, 8:16:52 PM by Hibernate Tools 4.3.5.Final
+// Generated Oct 20, 2019 3:14:09 PM by Hibernate Tools 4.3.5.Final
 
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -20,7 +22,7 @@ import javax.persistence.Version;
 @Table(name = "vip_hostel", catalog = "db247hostel")
 public class VipHostel implements java.io.Serializable {
 
-	private int id;
+	private Integer id;
 	private Date timestamp;
 	private Hostel hostel;
 	private int point;
@@ -28,20 +30,20 @@ public class VipHostel implements java.io.Serializable {
 	public VipHostel() {
 	}
 
-	public VipHostel(int id, Hostel hostel, int point) {
-		this.id = id;
+	public VipHostel(Hostel hostel, int point) {
 		this.hostel = hostel;
 		this.point = point;
 	}
 
 	@Id
+	@GeneratedValue(strategy = IDENTITY)
 
 	@Column(name = "id", unique = true, nullable = false)
-	public int getId() {
+	public Integer getId() {
 		return this.id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
