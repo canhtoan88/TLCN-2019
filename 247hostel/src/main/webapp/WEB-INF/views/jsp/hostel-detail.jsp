@@ -39,6 +39,21 @@
             height: 100%;
             width: 100%;
         }
+        
+        .field-results-item-desc-rate {
+        	display: flex;
+        	flex-direction: row;
+        }
+        
+        .field-results-item-desc-rate div {
+        	width: 3.5em;
+        	height: 2.5em;
+        	text-align: center;
+        }
+        
+        .field-results-item-desc-rate img {
+        	height: 100%;
+        }
 
     </style>
     
@@ -60,6 +75,35 @@
 	    			$("#div-map").append(value);
 	    		}
 	    	});
+	    };
+	    
+	    function rateHostel(idHostel, idUser, rate) {
+
+		    if(!idUser){
+				let r = confirm("Vui lòng đăng nhập để thực hiện đánh giá. \nĐăng nhập ngay:");
+
+				if(r) {
+					window.location.href = "../sign-in";
+				}
+			}
+		    else {
+	
+		    	$.ajax({
+		    		type : "GET",
+		    		url : "http://localhost:8080/247hostel/api/rateHostel",
+		    		data : {
+		    			idHostel: idHostel,
+		    			idUser: idUser,
+		    			rate: rate
+		    		},
+		    		success : function(value) {
+		
+		    			$("#field-results-item-desc-rate-id").empty();
+		    			$("#field-results-item-desc-rate-id").append(value);
+		    		}
+		    	});
+
+		    }
 	    };
 
     	
@@ -246,6 +290,42 @@
                                                         <div class="summary_item_info summary_item_info_price">${post.getPriceHostel() } tr/tháng</div>
                                                     </div>
                                                 </div>
+                                                <div class="summary_row clearfix">
+	                                                 <div class="post_summary_left fullwidth">
+	                                                     <div class="summary_item_headline">Đánh giá:</div>
+	                                                     <div class="summary_item_info">
+		                                                      <span class="field-results-item-desc-rate" id="field-results-item-desc-rate-id">
+		                                                      
+		                                                     	<%
+									                            	if(session.getAttribute("user") != null) {
+									                            %>
+									                            
+									                            	<c:forEach begin="1" end="${rate }" varStatus="i">
+						                                                <div><img onclick="rateHostel(${post.getHostel().getId() }, ${user.getId()  }, ${i.index})" alt="" src="../resources/icons/star_liked.svg" /></div>
+						                                            </c:forEach>
+						
+						                                            <c:forEach begin="${rate + 1}" end="5" varStatus="i">
+						                                                <div><img onclick="rateHostel(${post.getHostel().getId() }, ${user.getId() }, ${i.index})" alt="" src="../resources/icons/star_not_liked.svg" /></div>
+						                                            </c:forEach>
+
+									                            <%
+									                            	} else {
+									                            %>
+									                            
+									                            	<c:forEach begin="1" end="5" varStatus="i">
+						                                                <img onclick="rateHostel(${post.getHostel().getId() }, null, ${i.index})" alt="" src="../resources/icons/star_not_liked.svg" />
+						                                            </c:forEach>
+
+									                            <%
+									                            	}
+									                            %>
+
+						                                            						
+						
+						                                        </span>
+	                                                     </div>
+	                                                 </div>
+	                                             </div>
                                             </div>
                                         </div>
                                     </div>
@@ -325,7 +405,7 @@
                                 </div>
 
                                 <div class="article_copy_link input-group">
-                                    <input class="form-control article_copy_link_input" id="article_copy_link_input" type="text" readonly="" value="http://">
+                                    <input class="form-control article_copy_link_input" id="article_copy_link_input" type="text" readonly="" value="http://localhost:8080/247hostel/hostel-detail/${post.getHostel().getId()}">
                                     <div class="input-group-addon"><button class="btn btn_copy_link2" data-clipboard-target="#article_copy_link_input">Copy link</button></div>
                                 </div>
 

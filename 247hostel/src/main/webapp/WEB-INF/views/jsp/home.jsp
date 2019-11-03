@@ -58,7 +58,7 @@
         // Initialize and add the map
         function initMap() {
 
-            zoom = 14;
+            zoom = 13;
             distance = 5000; // meter
 
             createMap();
@@ -511,7 +511,7 @@
                     </div>
                     <hr class="dropdown-user-body-content-divide" />
                     <div class="dropdown-user-body-content">
-                        <a href="#">
+                        <a href="change-password">
                             <img class="dropdown-user-body-content-image" alt="" src="resources/icons/key.svg" />
                             <span class="dropdown-user-body-content-title"> Đổi mật khẩu </span>
                         </a>

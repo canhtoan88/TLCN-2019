@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class MyUploadFile {
 	
-	private static final String uploadRootPath = "C:\\PHAMHUU\\workspace-spring-tool-suite\\247hostel\\src\\main\\webapp\\WEB-INF\\resources\\upload";
+	private static final String uploadRootPath = "C:\\PHAMHUU\\GIT\\TLCN\\TLCN-2019\\247hostel\\src\\main\\webapp\\WEB-INF\\resources\\upload";
 
 	public static String renameFileByNanoTime(String fileName) {
 

@@ -1,8 +1,6 @@
-<!--
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
--->
 <!DOCTYPE html>
 <html lang="vi">
 
@@ -93,8 +91,8 @@
                                             <div class="help-block with-errors"></div>
                                         </div>
                                         <div class="custom-control custom-checkbox">
-                                            <input class="custom-control-input" data-val="true" data-val-required="The Remember field is required." id="Remember" name="remember" type="checkbox" value="true">
-                                            <input name="Remember" type="hidden" value="false">
+                                            <input class="custom-control-input" data-val="true" data-val-required="The Remember field is required." id="Remember" name="remember" type="checkbox" value="true" checked="checked">
+                                            <input name="Remember" type="hidden" value="true">
                                             <label class="custom-control-label" for="Remember">Nhớ mật khẩu</label>
                                             <div class="help-block with-errors"></div>
                                         </div>

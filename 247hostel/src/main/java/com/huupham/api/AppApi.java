@@ -1,6 +1,7 @@
 package com.huupham.api;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -183,8 +184,8 @@ public class AppApi {
 			@RequestParam String idDistrict, @RequestParam String idStreet, @RequestParam String idRangePrice,
 			@RequestParam String idRangeSpace) {
 
-		System.out.println("idCity=" + idCity + "&idDistrict=" + idDistrict + "&idStreet=" + idStreet + "&idRangePrice="
-				+ idRangePrice + "&idRangeSpace=" + idRangeSpace);
+//		System.out.println("idCity=" + idCity + "&idDistrict=" + idDistrict + "&idStreet=" + idStreet + "&idRangePrice="
+//				+ idRangePrice + "&idRangeSpace=" + idRangeSpace);
 
 		int intIdCity = Integer.parseInt(idCity);
 		int intIdDistrict = Integer.parseInt(idDistrict);
@@ -316,17 +317,14 @@ public class AppApi {
 
 		String parameter = houseNumber + " " + streetStr + " " + districtStr + " " + cityStr;
 
-		//
-		System.out.println(parameter);
-
 		String parameterFormat = UrlPercentEncodingFormat.createUrlPercentEncodingFormat(parameter);
 
 		String url = "<iframe class=\"map-iframe\" id=\"\" src=\"https://maps.google.com/maps?q=" + parameterFormat
 				+ "&t=&z=" + zoom
 				+ "&ie=UTF8&iwloc=&output=embed\" frameborder=\"0\" scrolling=\"no\" marginheight=\"0\" marginwidth=\"0\"></iframe>";
 
-		System.out.println(url);
-		
+//		System.out.println(url);
+
 		return url;
 	}
 
@@ -334,9 +332,6 @@ public class AppApi {
 	@RequestMapping(value = "changeRentedStatus", produces = "text/plain;charset=UTF-8")
 	@ResponseBody
 	public String changeRentedStatus(@RequestParam String idHostel) {
-
-		//
-//		System.out.println("idHostel = " + idHostel);
 
 		Hostel hostel = hostelDao.getHostelById(Integer.parseInt(idHostel));
 		if (hostel.isIsRented()) {
@@ -367,10 +362,7 @@ public class AppApi {
 	@GetMapping
 	@RequestMapping(value = "deleteHostel", produces = "text/plain;charset=UTF-8")
 	@ResponseBody
-	public String deleteHouse(@RequestParam String idHostel, HttpServletRequest request) {
-
-		//
-//		System.out.println("idHostel = " + idHostel);
+	public String deleteHostel(@RequestParam String idHostel, HttpServletRequest request) {
 
 		Hostel hostel = hostelDao.getHostelById(Integer.parseInt(idHostel));
 
@@ -506,7 +498,7 @@ public class AppApi {
 			html += "</td>";
 
 			html += "<td class=\"text-center\">";
-			html += "<span class=\"i-button i-button-edit\" id=\"\">";
+			html += "<span class=\"i-button i-button-delete\" id=\"\">";
 			html += "<i class=\"fa fa-trash-o fa-trash-o-click\" aria-hidden=\"true\" data-value=\"" + hostel.getId()
 					+ "\"></i>";
 			html += "</span>";
@@ -567,15 +559,14 @@ public class AppApi {
 		}
 	}
 
-	@SuppressWarnings("null")
 	@GetMapping
 	@RequestMapping(value = "getHostelsNearLocation", produces = "text/plain;charset=UTF-8")
 	@ResponseBody
 	public String getHostelsNearLocation(@RequestParam String lat, @RequestParam String lng,
 			@RequestParam String idRangePrice, @RequestParam String idRangeSpace, @RequestParam String distance) {
 
-		System.out.println("lat=" + lat + "&lng=" + lng + "&idRangePrice=" + idRangePrice + "&idRangeSpace="
-				+ idRangeSpace + "&distance=" + distance);
+//		System.out.println("lat=" + lat + "&lng=" + lng + "&idRangePrice=" + idRangePrice + "&idRangeSpace="
+//				+ idRangeSpace + "&distance=" + distance);
 
 		double doubleLat = Double.parseDouble(lat);
 		double doubleLng = Double.parseDouble(lng);
@@ -626,7 +617,7 @@ public class AppApi {
 			}
 		}
 
-		System.out.println("hostels.sive()=" + hostels.size());
+//		System.out.println("hostels.sive()=" + hostels.size());
 
 		String strPositions = "";
 		for (Hostel hostel : hostels) {
@@ -680,6 +671,54 @@ public class AppApi {
 
 			html += "<span class=\"marker-popup-content-show-detail\">Xem chi tiết..</span>";
 			html += "</div></div></div></a></div>";
+		}
+
+		return html;
+	}
+
+	@GetMapping
+	@RequestMapping("rateHostel")
+	@ResponseBody
+	public String rateHostel(@RequestParam String idHostel, @RequestParam String idUser, @RequestParam String rate) {
+
+		System.out.println(idHostel + "-" + idUser + "-" + rate);
+
+		Rate rateUpdate = null;
+
+		Rate rateCheck = rateDao.getRateByIdUserAndIdHostel(Integer.parseInt(idUser), Integer.parseInt(idHostel));
+		if (rateCheck != null) { // Rate đã tồn tại
+
+			rateCheck.setRate(Integer.parseInt(rate));
+
+			rateUpdate = rateDao.updateRate(rateCheck);
+		} else {
+
+			Hostel hostel = hostelDao.getHostelById(Integer.parseInt(idHostel));
+			User user = userDao.getUserById(Integer.parseInt(idUser));
+
+			Rate rateNew = new Rate();
+			rateNew.setHostel(hostel);
+			rateNew.setUser(user);
+			rateNew.setRate(Integer.parseInt(rate));
+			rateNew.setTimestamp(new Date());
+
+			rateUpdate = rateDao.saveRate(rateNew);
+		}
+
+		String html = "";
+
+		if (rateUpdate != null) {
+
+			for (int i = 0; i < Integer.parseInt(rate); i++) {
+				html += "<div><img onclick=\"rateHostel(" + rateUpdate.getHostel().getId() + ", "
+						+ rateUpdate.getUser().getId() + ", " + (i + 1)
+						+ "\" alt=\"\" src=\"../resources/icons/star_liked.svg\" /></div>";
+			}
+			for (int j = Integer.parseInt(rate); j < 5; j++) {
+				html += "<div><img onclick=\"rateHostel(" + rateUpdate.getHostel().getId() + ", "
+						+ rateUpdate.getUser().getId() + ", " + (j + 1)
+						+ "\" alt=\"\" src=\"../resources/icons/star_not_liked.svg\" /></div>";
+			}
 		}
 
 		return html;

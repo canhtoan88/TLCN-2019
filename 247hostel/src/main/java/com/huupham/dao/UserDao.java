@@ -117,7 +117,7 @@ public class UserDao {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unused" })
-	public boolean checkLogin(String username, String password) {
+	public User checkLogin(String username, String password) {
 		// TODO Auto-generated method stub
 
 		SessionFactory factory = HibernateConfig.getSessionFactory();
@@ -136,7 +136,7 @@ public class UserDao {
 			// Commit data
 			session.getTransaction().commit();
 
-			return true;
+			return user;
 		} catch (Exception e) {
 
 			e.printStackTrace();
@@ -144,7 +144,7 @@ public class UserDao {
 			// Rollback data
 			session.getTransaction().rollback();
 
-			return false;
+			return null;
 		}
 	}
 

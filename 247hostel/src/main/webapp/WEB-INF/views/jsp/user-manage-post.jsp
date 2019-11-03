@@ -142,8 +142,9 @@
                                     <li><a href="user-info" title=""><i class="fa fa-user" aria-hidden="true"></i> Thông tin cá nhân</a></li>
                                     <li><a href="user-manage-post" title=""><i class="fa fa-list-alt" aria-hidden="true"></i> Quản lý nhà trọ</a></li>
                                     <hr />
-                                    <li><a href="#" title=""><i class="fa fa-key" aria-hidden="true"></i> Đổi mật khẩu</a></li>
-                                    <li><a href="#" title=""><i class="fa fa-phone" aria-hidden="true"></i> Đổi số điện thoại</a></li>
+                                    <li><a href="change-password" title=""><i class="fa fa-key" aria-hidden="true"></i> Đổi mật khẩu</a></li>
+                                    <li><a href="change-email" title=""><i class="fa fa-envelope" aria-hidden="true"></i> Đổi email</a></li>
+                                    <li><a href="change-phone" title=""><i class="fa fa-phone" aria-hidden="true"></i> Đổi số điện thoại</a></li>
                                     <li><a href="signOut" title=""><i class="fa fa-sign-out" aria-hidden="true"></i> Thoát</a></li>
                                     <hr />
                                     <li><a href="#" title=""><i class="fa fa-question-circle" aria-hidden="true"></i> Liên hệ hỗ trợ</a></li>
@@ -245,7 +246,7 @@
                                                     </c:choose>
                                                     <td class="text-center">
                                                         <span class="i-button i-button-edit" id="">
-                                                            <a href="post-edit/${hostel.getId() }" target="_blank"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                                            <a href="post-edit/${hostel.getId() }" target=""><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
                                                         </span>
                                                     </td>
                                                     <td class="text-center">

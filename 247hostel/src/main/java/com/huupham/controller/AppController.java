@@ -38,6 +38,7 @@ import com.huupham.entities.City;
 import com.huupham.entities.District;
 import com.huupham.entities.Hostel;
 import com.huupham.entities.Image;
+import com.huupham.entities.Rate;
 import com.huupham.entities.Street;
 import com.huupham.entities.User;
 import com.huupham.entities.Video;
@@ -50,10 +51,10 @@ public class AppController {
 
 	@Autowired
 	CityDao cityDao;
-	
+
 	@Autowired
 	DistrictDao districtDao;
-	
+
 	@Autowired
 	StreetDao streetDao;
 
@@ -62,47 +63,47 @@ public class AppController {
 
 	@Autowired
 	AvatarDao avatarDao;
-	
+
 	@Autowired
 	HostelDao hostelDao;
-	
+
 	@Autowired
 	ImageDao imageDao;
-	
+
 	@Autowired
 	VideoDao videoDao;
-	
+
 	@Autowired
 	RateDao rateDao;
-	
+
 	@Autowired
 	PostDao postDao;
-	
+
 	@Autowired
 	AuthorizationDao authorizationDao;
-	
+
 	@GetMapping
 	@RequestMapping("/")
 	public String getDefault(HttpServletRequest request, ModelMap modelMap) {
 
 		List<City> cities = cityDao.getCities();
-		
+
 		// get Ho Chi Minh city before
 		List<City> cities2 = new ArrayList<City>();
-		for(City city : cities) {
-			if(city.getId() == 29) {
+		for (City city : cities) {
+			if (city.getId() == 29) {
 				cities2.add(city);
 			}
 		}
-		for(City city : cities) {
+		for (City city : cities) {
 			cities2.add(city);
 		}
-		
+
 		// Get new hostels
 		List<Hostel> hostels = hostelDao.getNewHostels_IsCensored(1, 10);
 		List<Post> posts = new ArrayList<Post>();
-		for(Hostel hostel: hostels) {
-			
+		for (Hostel hostel : hostels) {
+
 			Post post = postDao.createMiniPostFromHostel(hostel);
 			posts.add(post);
 		}
@@ -114,10 +115,11 @@ public class AppController {
 		modelMap.addAttribute("cities", cities2);
 		return "home";
 	}
-	
+
 	@GetMapping
 	@RequestMapping("home")
 	public String getHome() {
+
 		return "redirect:/";
 	}
 
@@ -145,10 +147,9 @@ public class AppController {
 
 		String passwordEncodeMd5 = PasswordEncodeMD5.createPasswordEncodeMD5(password);
 
-		boolean b = userDao.checkLogin(username, passwordEncodeMd5);
-		if (b) { // Login success
+		User user = userDao.checkLogin(username, passwordEncodeMd5);
+		if (user != null) { // Login success
 
-			User user = userDao.getUserByUsername(username);
 			Avatar avatar = avatarDao.getAvatarByIdUser(user.getId());
 
 			session.setAttribute("user", user);
@@ -182,43 +183,44 @@ public class AppController {
 
 	@PostMapping
 	@RequestMapping(value = "signUp", produces = "text/plain;charset=UTF-8")
-	public String postSignUp(@ModelAttribute User user, @RequestParam String confirmPassword, 
-			ModelMap modelMap, HttpServletRequest request) {
-		
-		System.out.println(user.getFullname() +"|"+ user.getEmail() +"|"+ user.getPhone() +"|"+ user.getPassword());
-		System.out.println(confirmPassword);
-		
+	public String postSignUp(@ModelAttribute User user, @RequestParam String confirmPassword, ModelMap modelMap,
+			HttpServletRequest request) {
+
+//		System.out
+//				.println(user.getFullname() + "|" + user.getEmail() + "|" + user.getPhone() + "|" + user.getPassword());
+//		System.out.println(confirmPassword);
+
 		// Check email and phone empty
-		if(user.getEmail().trim().equals("") && user.getPhone().trim().equals("")) {
-			
+		if (user.getEmail().trim().equals("") && user.getPhone().trim().equals("")) {
+
 			modelMap.addAttribute("user", user);
 			modelMap.addAttribute("confirmPassword", confirmPassword);
 			modelMap.addAttribute("message", "Bạn cần cung cấp Email hoặc Số điện thoại để đăng ký.");
-			return "sign-up";	
+			return "sign-up";
 		}
 
 		// Check email exists
-		if(user.getEmail() != null && !user.getEmail().trim().equals("") 
+		if (user.getEmail() != null && !user.getEmail().trim().equals("")
 				&& userDao.checkExistsEmail(user.getEmail())) {
-			
+
 			user.setEmail("");
 			modelMap.addAttribute("user", user);
 			modelMap.addAttribute("confirmPassword", confirmPassword);
 			modelMap.addAttribute("message", "Email đã tồn tại!");
-			return "sign-up";			
+			return "sign-up";
 		}
 
 		// Phone exists
-		if (user.getPhone() != null && !user.getPhone().trim().equals("") 
+		if (user.getPhone() != null && !user.getPhone().trim().equals("")
 				&& userDao.checkExistsPhone(user.getPhone())) {
-			
+
 			user.setPhone("");
 			modelMap.addAttribute("user", user);
 			modelMap.addAttribute("confirmPassword", confirmPassword);
 			modelMap.addAttribute("message", "Số điện thoại đã tồn tại!");
 			return "sign-up";
 		}
-		
+
 		// Check password length (>=6 charactor)
 		if (user.getPassword().length() < 6) {
 
@@ -227,9 +229,7 @@ public class AppController {
 			modelMap.addAttribute("confirmPassword", "");
 			modelMap.addAttribute("message", "Mật khẩu tối thiểu 6 ký tự!");
 			return "sign-up";
-		} 
-		
-		
+		}
 
 		// Password not confirm
 		if (!user.getPassword().equals(confirmPassword)) {
@@ -239,27 +239,28 @@ public class AppController {
 			modelMap.addAttribute("confirmPassword", "");
 			modelMap.addAttribute("message", "Mật khẩu không trùng khớp!");
 			return "sign-up";
-		} 
+		}
 
 		// Encode user password
 		String passwordEncodeMd5 = PasswordEncodeMD5.createPasswordEncodeMD5(user.getPassword());
 		user.setPassword(passwordEncodeMd5);
-		
-		// Set timestamp register
-		user.setTimeRegister(new Date());
 
-		// Get User authorization
+		user.setTimeRegister(new Date());
+		user.setGender(false);
+		user.setAddress("");
+
+		// Get "User" authorization
 		Authorization authorization = authorizationDao.getAuthorizationById(3);
 		user.setAuthorization(authorization);
 
 		User userSave = userDao.saveUser(user);
 		if (userSave != null) { // Insert success
-		
+
 			// Create default avatar
 			Avatar avatar = new Avatar();
 			avatar.setUser(userSave);
 			avatar.setUrl("resources/icons/user_color.svg");
-			Avatar avatarSave = avatarDao.saveAvatar(avatar);			
+			Avatar avatarSave = avatarDao.saveAvatar(avatar);
 
 			HttpSession session = request.getSession();
 			session.setAttribute("user", user);
@@ -276,16 +277,37 @@ public class AppController {
 	@GetMapping
 	@RequestMapping("hostel-detail/{id}")
 	public String getHouseDetail(@PathVariable int id, ModelMap modelMap, HttpServletRequest request) {
-
+		
 		Hostel hostel = hostelDao.getHostelById(id);
 		if (hostel != null) {
-			
+
 			Post post = postDao.createFullPostFromHostel(hostel);
 			List<District> districts = districtDao.getDistrictsByIdCity(hostel.getCity().getId());
 			
+			int rateCount = 0;
+			
+			HttpSession session = request.getSession();
+			User userSession = (User) session.getAttribute("user");
+			if(userSession != null) {
+				
+				Rate rate = rateDao.getRateByIdUserAndIdHostel(userSession.getId(), hostel.getId());
+				if(rate != null) {
+					
+					rateCount = rate.getRate();
+				}
+				else {
+					
+					rateCount = 0;
+				}
+			}
+			else {
+				
+				rateCount = 0;
+			}
+
 			modelMap.addAttribute("post", post);
 			modelMap.addAttribute("districts", districts);
-			
+			modelMap.addAttribute("rate", rateCount);
 			return "hostel-detail";
 		} else {
 
@@ -296,53 +318,53 @@ public class AppController {
 	@GetMapping
 	@RequestMapping("user-info")
 	public String getUserInfo(HttpServletRequest request, ModelMap modelMap) {
-		
+
 		HttpSession session = request.getSession();
-		if(session.getAttribute("user") != null) {
-			
-			User user = userDao.getUserById(((User) session.getAttribute("user")).getId());
+		User userSession = (User) session.getAttribute("user");
+		if (userSession != null) {
+
+			User user = userDao.getUserById(userSession.getId());
 			switch (user.getAuthorization().getId()) {
-				case 3: // user
-	
-					int countHouse = hostelDao.getCountHostelByIdUser(user.getId());
-					int countHouseIsRented = hostelDao.getCountHostelIsRentedByIdUser(user.getId());
-					int countHouseIsNotRented = hostelDao.getCountHostelIsNotRentedByIdUser(user.getId());
-					int countHouseIsCensored = hostelDao.getCountHostelIsCensoredByIdUser(user.getId());
-					int countHouseIsWaittingCensored = hostelDao.getCountHostelIsWaittingCensorByIdUser(user.getId());
-					int countHouseIsNotCensored = hostelDao.getCountHostelIsNotCensoredByIdUser(user.getId());
-	
-					modelMap.addAttribute("countHouse", countHouse);
-					modelMap.addAttribute("countHouseIsRented", countHouseIsRented);
-					modelMap.addAttribute("countHouseIsNotRented", countHouseIsNotRented);
-					modelMap.addAttribute("countHouseIsCensored", countHouseIsCensored);
-					modelMap.addAttribute("countHouseIsWaittingCensored", countHouseIsWaittingCensored);
-					modelMap.addAttribute("countHouseIsNotCensored", countHouseIsNotCensored);
-					
-					return "user-info";
-	
-				case 2: // employee
-					
+			case 3: // user
+
+				int countHouse = hostelDao.getCountHostelByIdUser(user.getId());
+				int countHouseIsRented = hostelDao.getCountHostelIsRentedByIdUser(user.getId());
+				int countHouseIsNotRented = hostelDao.getCountHostelIsNotRentedByIdUser(user.getId());
+				int countHouseIsCensored = hostelDao.getCountHostelIsCensoredByIdUser(user.getId());
+				int countHouseIsWaittingCensored = hostelDao.getCountHostelIsWaittingCensorByIdUser(user.getId());
+				int countHouseIsNotCensored = hostelDao.getCountHostelIsNotCensoredByIdUser(user.getId());
+
+				modelMap.addAttribute("countHouse", countHouse);
+				modelMap.addAttribute("countHouseIsRented", countHouseIsRented);
+				modelMap.addAttribute("countHouseIsNotRented", countHouseIsNotRented);
+				modelMap.addAttribute("countHouseIsCensored", countHouseIsCensored);
+				modelMap.addAttribute("countHouseIsWaittingCensored", countHouseIsWaittingCensored);
+				modelMap.addAttribute("countHouseIsNotCensored", countHouseIsNotCensored);
+
+				return "user-info";
+
+			case 2: // employee
+
 //					Employee employee = employeeService.selectEmployeeByIdUser(user.getIdUser());
 //					employee.setUser(user);
 //					modelMap.addAttribute("employee", employee);
 //					return "employee-info";
-	
-				case 1: // admin
-					
+
+			case 1: // admin
+
 //					Admin admin = new Admin();
 //					admin.setUser(user);
 //					modelMap.addAttribute("admin", admin);
 //					return "admin-info";
-	
-				default:
-			
-					session.invalidate();			
-					return "redirect:/sign-in";
+
+			default:
+
+				session.invalidate();
+				return "redirect:/sign-in";
 			}
-		}
-		else {
-			
-			session.invalidate();			
+		} else {
+
+			session.invalidate();
 			return "redirect:/sign-in";
 		}
 	}
@@ -350,9 +372,8 @@ public class AppController {
 	@PostMapping
 	@RequestMapping("updateUserInfo")
 	public String postUpdateInfo(@RequestParam String fullname, @RequestParam String address,
-			@RequestParam String birthday, @RequestParam String gender, 
-			HttpServletRequest request, ModelMap modelMap) {
-		
+			@RequestParam String birthday, @RequestParam String gender, HttpServletRequest request, ModelMap modelMap) {
+
 //		System.out.println("fullname: " + fullname);
 //		System.out.println("address: " + address);
 //		System.out.println("birthday: " + birthday);
@@ -360,26 +381,25 @@ public class AppController {
 
 		HttpSession session = request.getSession();
 		User user = (User) session.getAttribute("user");
-		
+
 		User user2 = userDao.getUserById(user.getId());
-		
-		if(fullname != null && !user2.getFullname().equals(fullname.trim())) {
+
+		if (fullname != null && !user2.getFullname().equals(fullname.trim())) {
 			user2.setFullname(fullname);
 		}
-		
-		if(user2.getAddress() == null || 
-				address != null && user2.getAddress() != null 
-				&& !user2.getAddress().equals(address.trim())) {
+
+		if (user2.getAddress() == null
+				|| address != null && user2.getAddress() != null && !user2.getAddress().equals(address.trim())) {
 			user2.setAddress(address);
 		}
-		
-		if(!birthday.equals("")) {
+
+		if (!birthday.equals("")) {
 			Date newBirthday;
 			try {
 				newBirthday = new SimpleDateFormat("yyyy-MM-dd").parse(birthday);
 //				System.out.println("new birthday: " + newBirthday);
-				if(user2.getBirthday() == null || 
-						user2.getBirthday() != null && user2.getBirthday().compareTo(newBirthday) != 0) {			
+				if (user2.getBirthday() == null
+						|| user2.getBirthday() != null && user2.getBirthday().compareTo(newBirthday) != 0) {
 					user2.setBirthday(newBirthday);
 				}
 			} catch (ParseException e) {
@@ -387,22 +407,21 @@ public class AppController {
 				e.printStackTrace();
 			}
 		}
-		
-		if(!(user2.isGender() ? "male" : "female").equals(gender)) {
+
+		if (!(user2.isGender() ? "male" : "female").equals(gender)) {
 			user2.setGender((gender.equals("male") ? true : false));
 		}
-		
+
 //		System.out.println("new user: " + userDao.getUserInfo(user2));
-		
-		User userUpdate = userDao.updateUser(user2);		
-		if(userUpdate != null) {
-			
+
+		User userUpdate = userDao.updateUser(user2);
+		if (userUpdate != null) {
+
 			session.setAttribute("user", userUpdate);
 			modelMap.addAttribute("message", "Cập nhập thông tin thành công!");
-			return "user-info";
-		}
-		else {
-			
+			return "redirect:/user-info";
+		} else {
+
 			modelMap.addAttribute("message", "Cập nhập thông tin thất bại!");
 			return "user-info";
 		}
@@ -413,19 +432,18 @@ public class AppController {
 	public String getUserManagePost(HttpServletRequest request, ModelMap modelMap) {
 
 		HttpSession session = request.getSession();
-		User user = (User) session.getAttribute("user");
-		
-		if(user != null) {
+		User userSession = (User) session.getAttribute("user");
 
-			List<Hostel> hostels = hostelDao.getHostelsByIdUser(user.getId(), 1, 10);
+		if (userSession != null) {
+
+			List<Hostel> hostels = hostelDao.getHostelsByIdUser(userSession.getId(), 1, 10);
 
 			modelMap.addAttribute("hostels", hostels);
 			return "user-manage-post";
-			
-		}
-		else {
-			
-			session.invalidate();			
+
+		} else {
+
+			session.invalidate();
 			return "redirect:/sign-in";
 		}
 	}
@@ -435,8 +453,8 @@ public class AppController {
 	public String getPost(ModelMap modelMap, HttpServletRequest request) {
 
 		HttpSession session = request.getSession();
-		User user = (User) session.getAttribute("user");
-		if (user != null) {
+		User userSession = (User) session.getAttribute("user");
+		if (userSession != null) {
 
 			List<City> cities = cityDao.getCities();
 
@@ -448,9 +466,9 @@ public class AppController {
 			return "sign-in";
 		}
 	}
-	
+
 	@Autowired
-    ServletContext context;
+	ServletContext context;
 
 	@PostMapping
 	@RequestMapping("postUpload")
@@ -458,14 +476,14 @@ public class AppController {
 			@ModelAttribute Hostel hostel, @RequestParam MultipartFile[] imagesFile,
 			@RequestParam MultipartFile[] videosFile, ModelMap modelMap, HttpServletRequest request) {
 
-		System.out.println("idCity: " + idCity);
-		System.out.println("idDistrict: " + idDistrict);
-		System.out.println("idStreet : " + idStreet);
-		System.out.println("hostelNumber = " + hostel.getHostelNumber());
-		System.out.println("price = " + hostel.getPrice());
-		System.out.println("space = " + hostel.getSpace());
-		System.out.println("title = " + hostel.getTitle());
-		System.out.println("description = " + hostel.getDescription());
+//		System.out.println("idCity: " + idCity);
+//		System.out.println("idDistrict: " + idDistrict);
+//		System.out.println("idStreet : " + idStreet);
+//		System.out.println("hostelNumber = " + hostel.getHostelNumber());
+//		System.out.println("price = " + hostel.getPrice());
+//		System.out.println("space = " + hostel.getSpace());
+//		System.out.println("title = " + hostel.getTitle());
+//		System.out.println("description = " + hostel.getDescription());
 //		for (MultipartFile imageFile : imagesFile) {
 //			System.out.println("image name = " + imageFile.getOriginalFilename());
 //		}
@@ -478,8 +496,8 @@ public class AppController {
 		Street street = streetDao.getStreetById(Integer.parseInt(idStreet));
 
 		HttpSession session = request.getSession();
-		User ssUser = (User) session.getAttribute("user");
-		User user = userDao.getUserById(ssUser.getId());
+		User userSession = (User) session.getAttribute("user");
+		User user = userDao.getUserById(userSession.getId());
 
 		hostel.setCity(city);
 		hostel.setDistrict(district);
@@ -488,22 +506,22 @@ public class AppController {
 		hostel.setIsRented(false);
 		hostel.setIsCensored(0);
 		hostel.setTimestamp(new Date());
-		
+
 		// Insert hostel
 		Hostel hostelSave = hostelDao.saveHostel(hostel);
-		if(hostelSave != null) {
-			
+		if (hostelSave != null) {
+
 			System.out.println("Insert hostel success");
-			
+
 			// Upload images
 			try {
 
 				for (int i = 0; i < 10; i++) {
 
 					MultipartFile mFile = imagesFile[i];
-					
+
 					String url = MyUploadFile.uploadFile(request, mFile, "image");
-					
+
 					if (url.equals("")) { // upload file fail
 
 						//
@@ -517,13 +535,12 @@ public class AppController {
 						Image image = new Image();
 						image.setHostel(hostelSave);
 						image.setUrl(url);
-						
+
 						Image imageSave = imageDao.saveImage(image);
-						if(imageSave != null) {
-							
+						if (imageSave != null) {
+
 							System.out.println("Insert image success");
-						}
-						else {
+						} else {
 							System.out.println("Insert image fail");
 						}
 					}
@@ -533,14 +550,14 @@ public class AppController {
 				//
 				System.out.println("Error!!!");
 			}
-			
+
 			// Upload videos
 			try {
 
 				for (MultipartFile mFile : videosFile) {
-					
+
 					String url = MyUploadFile.uploadFile(request, mFile, "video");
-					
+
 					if (url.equals("")) { // upload file fail
 
 						//
@@ -571,148 +588,372 @@ public class AppController {
 
 				//
 				System.out.println("Error!!!");
-			}		
-			
+			}
 
 			return "redirect:/user-manage-post";
-		}
-		else {
+		} else {
 
 			//
 			System.out.println("Insert hostel fail");
 
 			modelMap.addAttribute("message", "Thêm nhà trọ thất bại");
-			return "post";			
+			return "post";
+		}
+	}
+
+	@GetMapping
+	@RequestMapping("post-edit/{idHostel}")
+	public String getPostEdit(@PathVariable int idHostel, HttpServletRequest request, ModelMap modelMap) {
+
+		HttpSession session = request.getSession();
+		User userSession = (User) session.getAttribute("user");
+		if (userSession != null) {
+
+			List<City> cities = cityDao.getCities();
+
+			Hostel hostel = hostelDao.getHostelById(idHostel);
+			Post post = postDao.createFullPostFromHostel(hostel);
+
+			List<Image> images = imageDao.getImagesByIdHostel(idHostel);
+			List<Video> videos = videoDao.getVideosByIdHostel(idHostel);
+
+			modelMap.addAttribute("cities", cities);
+			modelMap.addAttribute("post", post);
+			modelMap.addAttribute("images", images);
+			modelMap.addAttribute("videos", videos);
+			return "post-edit";
+		} else {
+
+			session.invalidate();
+			return "redirect:/sign-in";
+		}
+	}
+
+	@PostMapping
+	@RequestMapping("post-edit/updatePost")
+	public String postUpdatePost(@RequestParam String idCity, @RequestParam String idDistrict,
+			@RequestParam String idStreet, @ModelAttribute Hostel hostel, @RequestParam MultipartFile[] imagesFile,
+			@RequestParam MultipartFile[] videosFile, ModelMap modelMap, HttpServletRequest request) {
+
+		HttpSession session = request.getSession();
+		User userSession = (User) session.getAttribute("user");
+		if (userSession != null) {
+
+			User user = userDao.getUserById(userSession.getId());
+			
+//			System.out.println("idHostel = " + hostel.getId());
+//			System.out.println("hostelNumber = " + hostel.getHostelNumber());
+//			System.out.println("price = " + hostel.getPrice());
+//			System.out.println("space = " + hostel.getSpace());
+//			System.out.println("title = " + hostel.getTitle());
+//			System.out.println("description = " + hostel.getDescription());
+//			for (MultipartFile imageFile : imagesFile) {
+//				System.out.println("image name = " + imageFile.getOriginalFilename());
+//			}
+//			for (MultipartFile videoFile : videosFile) {
+//				System.out.println("video name = " + videoFile.getOriginalFilename());
+//			}
+
+			City city = cityDao.getCityById(Integer.parseInt(idCity));
+			District district = districtDao.getDistrictById(Integer.parseInt(idDistrict));
+			Street street = streetDao.getStreetById(Integer.parseInt(idStreet));
+
+			// //
+			// System.out.println("idCity = " + city.getIdCity());
+			// System.out.println("idDistrict = " + district.getIdDistrict());
+			// System.out.println("idStreet = " + street.getIdStreet());
+			// System.out.println("idUser = " + user2.getIdUser());
+
+			Hostel hostelOld = hostelDao.getHostelById(hostel.getId());
+
+			hostelOld.setCity(city);
+			hostelOld.setDistrict(district);
+			hostelOld.setStreet(street);
+			hostelOld.setHostelNumber(hostel.getHostelNumber());
+			hostelOld.setTitle(hostel.getTitle());
+			hostelOld.setDescription(hostel.getDescription());
+			hostelOld.setUser(user);
+			hostelOld.setIsRented(false);
+			hostelOld.setIsCensored(0);
+
+			// update hostel
+			Hostel hostelUpdate = hostelDao.updateHostel(hostelOld);
+			if (hostelUpdate != null) { // Insert house success
+
+				//
+				System.out.println("Update hostel success");
+
+				return "redirect:/user-manage-post";
+			} else { // Insert house fail
+
+				//
+				System.out.println("Update hostel fail");
+
+				modelMap.addAttribute("message", "Cập nhập nhà trọ thất bại");
+				return "post-edit";
+			}
+		} else {
+
+			session.invalidate();
+			return "redirect:/sign-in";
+		}
+	}
+
+	@GetMapping
+	@RequestMapping("change-email")
+	public String changeEmail(HttpServletRequest request) {
+
+		HttpSession session = request.getSession();
+		User userSession = (User) session.getAttribute("user");
+		if (userSession != null) {
+
+//			return "change-email";
+			
+			session.setAttribute("modelChange", "email");
+			return "password-confirm";
+		} else {
+
+			session.invalidate();
+			return "redirect:/sign-in";
+		}
+	}
+
+	@PostMapping
+	@RequestMapping(value = "changeEmail", produces = "text/plain;charset=UTF-8")
+	public String changeEmail(@RequestParam String email, ModelMap modelMap,
+			HttpServletRequest request) {
+		
+		HttpSession session = request.getSession();
+		User userSession = (User) session.getAttribute("user");
+
+		// Check email empty
+		if (email.trim().equals("")) {
+			
+			modelMap.addAttribute("message", "Email không được để trống");
+			return "change-email";
 		}
 		
+		// Check new email similar old email
+		if (userSession.getEmail() != null && email.trim().equals(userSession.getEmail())) {
+			
+			modelMap.addAttribute("message", "Email không được giống email hiện tại");
+			return "change-email";
+		}		
+
+		// Check email exists
+		if (userDao.checkExistsEmail(email)) {
+
+			modelMap.addAttribute("message", "Email đã tồn tại!");
+			return "change-email";
+		}
+
+		User user = userDao.getUserById(userSession.getId());
+		user.setEmail(email);
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-//		boolean bInsertHouse = houseService.insertHouse(house);
-//		if (bInsertHouse) { // Insert house success
-//
-//			//
-//			System.out.println("Insert house success");
-//
-//			House houseInsertNewest = houseService.getHouseInsertNewest();
-//
-//			//
-//			System.out.println("idHouse insert = " + houseInsertNewest.getIdHouse());
-//
-//			if (houseInsertNewest != null) {
-//
-//				// Upload images
-//				try {
-//
-//					for (int i = 0; i < 10; i++) {
-//
-//						MultipartFile mFile = imagesFile[i];
-//
-//						String fileName = MyUploadFile.renameFileByNanoTime(mFile.getOriginalFilename());
-//						boolean bUploadFile = MyUploadFile.uploadFile(request, mFile, fileName, "image");
-//						if (!bUploadFile) { // upload file fail
-//
-//							//
-//							System.out.println("Upload file fail!");
-//						} else { // upload file success
-//
-//							//
-//							System.out.println("Upload file success!");
-//
-//							// Insert image
-//							Image image = new Image();
-//							image.setHouse(houseInsertNewest);
-//							image.setLinkImage(fileName);
-//							image.setHouse(houseInsertNewest);
-//
-//							boolean bInsertImage = imageService.insertImage(image);
-//							if (bInsertImage) {
-//
-//								//
-//								System.out.println("Insert image success");
-//							} else {
-//
-//								//
-//								System.out.println("Insert image fail");
-//							}
-//						}
-//					}
-//				} catch (Exception e) {
-//
-//					//
-//					System.out.println("Error!!!");
-//				}
-//
-//				// Upload videos
-//				try {
-//
-//					for (MultipartFile mFile : videosFile) {
-//
-//						String fileName = MyUploadFile.renameFileByNanoTime(mFile.getOriginalFilename());
-//						boolean bUploadFile = MyUploadFile.uploadFile(request, mFile, fileName, "video");
-//						if (!bUploadFile) { // upload file fail
-//
-//							//
-//							System.out.println("Upload file fail!");
-//						} else { // upload file success
-//
-//							//
-//							System.out.println("Upload file success!");
-//
-//							// Insert image
-//							Video video = new Video();
-//							video.setHouse(houseInsertNewest);
-//							video.setLinkVideo(fileName);
-//
-//							boolean bInsertVideo = videoService.insertVideo(video);
-//							if (bInsertVideo) {
-//
-//								//
-//								System.out.println("Insert video success");
-//							} else {
-//
-//								//
-//								System.out.println("Insert video fail");
-//							}
-//						}
-//					}
-//				} catch (Exception e) {
-//
-//					//
-//					System.out.println("Error!!!");
-//				}
-//
-//			}
-//
-//			return "redirect:/user-manage-post";
-//		} else { // Insert house fail
-//
-//			//
-//			System.out.println("Insert house fail");
-//
-//			modelMap.addAttribute("message", "Thêm nhà trọ thất bại");
-//			return "post";
-//		}
+		User userUpdate = userDao.updateUser(user);
+		if (userUpdate != null) { // Update success
+
+			session.setAttribute("user", user);
+			return "redirect:/user-info";
+		} else { // Insert fail
+
+			modelMap.addAttribute("message", "Đổi email thất bại. Thử lại!");
+			return "change-email";
+		}
 	}
-	
-	
-	
-	
-	
-	
-	
-	
+
+	@GetMapping
+	@RequestMapping("change-phone")
+	public String changePhone(HttpServletRequest request) {
+
+		HttpSession session = request.getSession();
+		User userSession = (User) session.getAttribute("user");
+		if (userSession != null) {
+
+//			return "change-phone";
+			
+			session.setAttribute("modelChange", "phone");
+			return "password-confirm";
+		} else {
+
+			session.invalidate();
+			return "redirect:/sign-in";
+		}
+	}
+
+	@PostMapping
+	@RequestMapping(value = "changePhone", produces = "text/plain;charset=UTF-8")
+	public String changePhone(@RequestParam String phone, ModelMap modelMap,
+			HttpServletRequest request) {
+		
+		HttpSession session = request.getSession();
+		User userSession = (User) session.getAttribute("user");
+
+		// Check phone empty
+		if (phone.trim().equals("")) {
+			
+			modelMap.addAttribute("message", "Số điện thoại không được để trống");
+			return "change-phone";
+		}
+		
+		// Check new phone similar old phone
+		if (userSession.getPhone() != null && phone.trim().equals(userSession.getPhone())) {
+			
+			modelMap.addAttribute("message", "Số điện thoại không được giống Số điện thoại hiện tại");
+			return "change-phone";
+		}		
+
+		// Check phone exists
+		if (userDao.checkExistsPhone(phone)) {
+
+			modelMap.addAttribute("message", "Số điện thoại đã tồn tại!");
+			return "change-phone";
+		}
+
+		User user = userDao.getUserById(userSession.getId());
+		user.setPhone(phone);
+		
+		User userUpdate = userDao.updateUser(user);
+		if (userUpdate != null) { // Update success
+
+			session.setAttribute("user", user);
+			return "redirect:/user-info";
+		} else { // Insert fail
+
+			modelMap.addAttribute("message", "Đổi Số điện thoại thất bại. Thử lại!");
+			return "change-phone";
+		}
+	}
+
+	@GetMapping
+	@RequestMapping("password-confirm")
+	public String paswordConfirm(HttpServletRequest request) {
+
+		HttpSession session = request.getSession();
+		User userSession = (User) session.getAttribute("user");
+		if (userSession != null) {
+
+			return "password-confirm";
+		} else {
+
+			session.invalidate();
+			return "redirect:/sign-in";
+		}
+	}
+
+	@PostMapping
+	@RequestMapping(value = "passwordConfirm", produces = "text/plain;charset=UTF-8")
+	public String paswordConfirm(@RequestParam String password, ModelMap modelMap,
+			HttpServletRequest request) {
+		
+		HttpSession session = request.getSession();
+		User userSession = (User) session.getAttribute("user");
+
+		// Check password empty
+		if (password.trim().equals("")) {
+			
+			modelMap.addAttribute("message", "Mật khẩu không được để trống");
+			return "password-confirm";
+		}
+		
+		String passwordEncodeMd5 = PasswordEncodeMD5.createPasswordEncodeMD5(password);
+
+		// Check password correct
+		if (!passwordEncodeMd5.equals(userSession.getPassword())) {
+
+			modelMap.addAttribute("message", "Mật khẩu không chính xác!");
+			return "password-confirm";
+		}
+		else {
+			
+			String modelChange = (String) session.getAttribute("modelChange");
+			if(modelChange.equals("email")) {
+				
+				session.removeAttribute("modelChange");
+				return "change-email";
+			}
+			else if(modelChange.equals("phone")) {
+				
+				session.removeAttribute("modelChange");
+				return "change-phone";
+			}
+			else {
+				
+				return "redirect:/sign-in";
+			}
+		}
+	}
+
+	@GetMapping
+	@RequestMapping("change-password")
+	public String changePassword(HttpServletRequest request) {
+
+		HttpSession session = request.getSession();
+		User userSession = (User) session.getAttribute("user");
+		if (userSession != null) {
+
+			return "change-password";
+		} else {
+
+			session.invalidate();
+			return "redirect:/sign-in";
+		}
+	}
+
+	@PostMapping
+	@RequestMapping(value = "changePassword", produces = "text/plain;charset=UTF-8")
+	public String changePassword(@RequestParam String passwordOld, @RequestParam String passwordNew, 
+			@RequestParam String passwordNewConfirm, ModelMap modelMap,
+			HttpServletRequest request) {
+		
+		HttpSession session = request.getSession();
+		User userSession = (User) session.getAttribute("user");
+
+		// Check password empty
+		if (passwordOld.trim().equals("") || passwordNew.trim().equals("")
+				|| passwordNewConfirm.trim().equals("")) {
+			
+			modelMap.addAttribute("message", "Mật khẩu không được để trống");
+			return "change-password";
+		}
+		
+		String passwordOldEncodeMd5 = PasswordEncodeMD5.createPasswordEncodeMD5(passwordOld.trim());
+		String passwordNewEncodeMd5 = PasswordEncodeMD5.createPasswordEncodeMD5(passwordNew.trim());
+
+		// Check password correct
+		if (!passwordOldEncodeMd5.equals(userSession.getPassword())) {
+
+			modelMap.addAttribute("message", "Mật khẩu cũ không chính xác!");
+			return "change-password";
+		}
+		
+		// Check password confirm correct
+		if (!passwordNew.trim().equals(passwordNewConfirm.trim())) {
+			
+			modelMap.addAttribute("message", "Xác nhận mật khẩu chưa chính xác");
+			return "change-password";
+		}	
+		
+		// Check new password similar old password
+		if (passwordOld.trim().equals(passwordNew.trim())) {
+			
+			modelMap.addAttribute("message", "Mật khẩu mới không được giống Mật khẩu cũ");
+			return "change-password";
+		}		
+
+		User user = userDao.getUserById(userSession.getId());
+		user.setPassword(passwordNewEncodeMd5);
+		
+		User userUpdate = userDao.updateUser(user);
+		if (userUpdate != null) { // Update success
+
+			session.setAttribute("user", user);
+			return "redirect:/user-info";
+		} else { // Insert fail
+
+			modelMap.addAttribute("message", "Đổi Số điện thoại thất bại. Thử lại!");
+			return "change-password";
+		}
+	}
+
 }
