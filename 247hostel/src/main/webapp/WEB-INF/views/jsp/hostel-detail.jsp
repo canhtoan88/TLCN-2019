@@ -54,6 +54,10 @@
         .field-results-item-desc-rate img {
         	height: 100%;
         }
+        
+        .field-results-item-desc-rate img:hover {
+        	cursor: pointer;
+        }
 
     </style>
     
@@ -313,7 +317,7 @@
 									                            %>
 									                            
 									                            	<c:forEach begin="1" end="5" varStatus="i">
-						                                                <img onclick="rateHostel(${post.getHostel().getId() }, null, ${i.index})" alt="" src="../resources/icons/star_not_liked.svg" />
+						                                                <div><img onclick="rateHostel(${post.getHostel().getId() }, null, ${i.index})" alt="" src="../resources/icons/star_not_liked.svg" /></div>
 						                                            </c:forEach>
 
 									                            <%
