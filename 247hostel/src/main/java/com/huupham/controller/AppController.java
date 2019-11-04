@@ -277,31 +277,29 @@ public class AppController {
 	@GetMapping
 	@RequestMapping("hostel-detail/{id}")
 	public String getHouseDetail(@PathVariable int id, ModelMap modelMap, HttpServletRequest request) {
-		
+
 		Hostel hostel = hostelDao.getHostelById(id);
 		if (hostel != null) {
 
 			Post post = postDao.createFullPostFromHostel(hostel);
 			List<District> districts = districtDao.getDistrictsByIdCity(hostel.getCity().getId());
-			
+
 			int rateCount = 0;
-			
+
 			HttpSession session = request.getSession();
 			User userSession = (User) session.getAttribute("user");
-			if(userSession != null) {
-				
+			if (userSession != null) {
+
 				Rate rate = rateDao.getRateByIdUserAndIdHostel(userSession.getId(), hostel.getId());
-				if(rate != null) {
-					
+				if (rate != null) {
+
 					rateCount = rate.getRate();
-				}
-				else {
-					
+				} else {
+
 					rateCount = 0;
 				}
-			}
-			else {
-				
+			} else {
+
 				rateCount = 0;
 			}
 
@@ -640,7 +638,7 @@ public class AppController {
 		if (userSession != null) {
 
 			User user = userDao.getUserById(userSession.getId());
-			
+
 //			System.out.println("idHostel = " + hostel.getId());
 //			System.out.println("hostelNumber = " + hostel.getHostelNumber());
 //			System.out.println("price = " + hostel.getPrice());
@@ -708,7 +706,7 @@ public class AppController {
 		if (userSession != null) {
 
 //			return "change-email";
-			
+
 			session.setAttribute("modelChange", "email");
 			return "password-confirm";
 		} else {
@@ -720,25 +718,24 @@ public class AppController {
 
 	@PostMapping
 	@RequestMapping(value = "changeEmail", produces = "text/plain;charset=UTF-8")
-	public String changeEmail(@RequestParam String email, ModelMap modelMap,
-			HttpServletRequest request) {
-		
+	public String changeEmail(@RequestParam String email, ModelMap modelMap, HttpServletRequest request) {
+
 		HttpSession session = request.getSession();
 		User userSession = (User) session.getAttribute("user");
 
 		// Check email empty
 		if (email.trim().equals("")) {
-			
+
 			modelMap.addAttribute("message", "Email không được để trống");
 			return "change-email";
 		}
-		
+
 		// Check new email similar old email
 		if (userSession.getEmail() != null && email.trim().equals(userSession.getEmail())) {
-			
+
 			modelMap.addAttribute("message", "Email không được giống email hiện tại");
 			return "change-email";
-		}		
+		}
 
 		// Check email exists
 		if (userDao.checkExistsEmail(email)) {
@@ -749,7 +746,7 @@ public class AppController {
 
 		User user = userDao.getUserById(userSession.getId());
 		user.setEmail(email);
-		
+
 		User userUpdate = userDao.updateUser(user);
 		if (userUpdate != null) { // Update success
 
@@ -771,7 +768,7 @@ public class AppController {
 		if (userSession != null) {
 
 //			return "change-phone";
-			
+
 			session.setAttribute("modelChange", "phone");
 			return "password-confirm";
 		} else {
@@ -783,25 +780,24 @@ public class AppController {
 
 	@PostMapping
 	@RequestMapping(value = "changePhone", produces = "text/plain;charset=UTF-8")
-	public String changePhone(@RequestParam String phone, ModelMap modelMap,
-			HttpServletRequest request) {
-		
+	public String changePhone(@RequestParam String phone, ModelMap modelMap, HttpServletRequest request) {
+
 		HttpSession session = request.getSession();
 		User userSession = (User) session.getAttribute("user");
 
 		// Check phone empty
 		if (phone.trim().equals("")) {
-			
+
 			modelMap.addAttribute("message", "Số điện thoại không được để trống");
 			return "change-phone";
 		}
-		
+
 		// Check new phone similar old phone
 		if (userSession.getPhone() != null && phone.trim().equals(userSession.getPhone())) {
-			
+
 			modelMap.addAttribute("message", "Số điện thoại không được giống Số điện thoại hiện tại");
 			return "change-phone";
-		}		
+		}
 
 		// Check phone exists
 		if (userDao.checkExistsPhone(phone)) {
@@ -812,7 +808,7 @@ public class AppController {
 
 		User user = userDao.getUserById(userSession.getId());
 		user.setPhone(phone);
-		
+
 		User userUpdate = userDao.updateUser(user);
 		if (userUpdate != null) { // Update success
 
@@ -843,19 +839,18 @@ public class AppController {
 
 	@PostMapping
 	@RequestMapping(value = "passwordConfirm", produces = "text/plain;charset=UTF-8")
-	public String paswordConfirm(@RequestParam String password, ModelMap modelMap,
-			HttpServletRequest request) {
-		
+	public String paswordConfirm(@RequestParam String password, ModelMap modelMap, HttpServletRequest request) {
+
 		HttpSession session = request.getSession();
 		User userSession = (User) session.getAttribute("user");
 
 		// Check password empty
 		if (password.trim().equals("")) {
-			
+
 			modelMap.addAttribute("message", "Mật khẩu không được để trống");
 			return "password-confirm";
 		}
-		
+
 		String passwordEncodeMd5 = PasswordEncodeMD5.createPasswordEncodeMD5(password);
 
 		// Check password correct
@@ -863,22 +858,19 @@ public class AppController {
 
 			modelMap.addAttribute("message", "Mật khẩu không chính xác!");
 			return "password-confirm";
-		}
-		else {
-			
+		} else {
+
 			String modelChange = (String) session.getAttribute("modelChange");
-			if(modelChange.equals("email")) {
-				
+			if (modelChange.equals("email")) {
+
 				session.removeAttribute("modelChange");
 				return "change-email";
-			}
-			else if(modelChange.equals("phone")) {
-				
+			} else if (modelChange.equals("phone")) {
+
 				session.removeAttribute("modelChange");
 				return "change-phone";
-			}
-			else {
-				
+			} else {
+
 				return "redirect:/sign-in";
 			}
 		}
@@ -902,21 +894,19 @@ public class AppController {
 
 	@PostMapping
 	@RequestMapping(value = "changePassword", produces = "text/plain;charset=UTF-8")
-	public String changePassword(@RequestParam String passwordOld, @RequestParam String passwordNew, 
-			@RequestParam String passwordNewConfirm, ModelMap modelMap,
-			HttpServletRequest request) {
-		
+	public String changePassword(@RequestParam String passwordOld, @RequestParam String passwordNew,
+			@RequestParam String passwordNewConfirm, ModelMap modelMap, HttpServletRequest request) {
+
 		HttpSession session = request.getSession();
 		User userSession = (User) session.getAttribute("user");
 
 		// Check password empty
-		if (passwordOld.trim().equals("") || passwordNew.trim().equals("")
-				|| passwordNewConfirm.trim().equals("")) {
-			
+		if (passwordOld.trim().equals("") || passwordNew.trim().equals("") || passwordNewConfirm.trim().equals("")) {
+
 			modelMap.addAttribute("message", "Mật khẩu không được để trống");
 			return "change-password";
 		}
-		
+
 		String passwordOldEncodeMd5 = PasswordEncodeMD5.createPasswordEncodeMD5(passwordOld.trim());
 		String passwordNewEncodeMd5 = PasswordEncodeMD5.createPasswordEncodeMD5(passwordNew.trim());
 
@@ -926,24 +916,24 @@ public class AppController {
 			modelMap.addAttribute("message", "Mật khẩu cũ không chính xác!");
 			return "change-password";
 		}
-		
+
 		// Check password confirm correct
 		if (!passwordNew.trim().equals(passwordNewConfirm.trim())) {
-			
+
 			modelMap.addAttribute("message", "Xác nhận mật khẩu chưa chính xác");
 			return "change-password";
-		}	
-		
+		}
+
 		// Check new password similar old password
 		if (passwordOld.trim().equals(passwordNew.trim())) {
-			
+
 			modelMap.addAttribute("message", "Mật khẩu mới không được giống Mật khẩu cũ");
 			return "change-password";
-		}		
+		}
 
 		User user = userDao.getUserById(userSession.getId());
 		user.setPassword(passwordNewEncodeMd5);
-		
+
 		User userUpdate = userDao.updateUser(user);
 		if (userUpdate != null) { // Update success
 
@@ -954,6 +944,13 @@ public class AppController {
 			modelMap.addAttribute("message", "Đổi Số điện thoại thất bại. Thử lại!");
 			return "change-password";
 		}
+	}
+
+	@GetMapping
+	@RequestMapping("404-error")
+	public String get404error(HttpServletRequest request) {
+
+		return "404";
 	}
 
 }

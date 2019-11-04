@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
@@ -36,5 +37,11 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
 		resolver.setMaxUploadSize(268435456); // 256MB
 		return resolver;
 	}
+	
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+    	
+        registry.addViewController("404.jsp").setViewName("404");
+    }
 
 }
