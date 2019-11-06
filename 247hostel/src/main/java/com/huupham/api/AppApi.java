@@ -589,10 +589,11 @@ public class AppApi {
 
 		List<Hostel> hostels = new ArrayList<Hostel>();
 
+		int hostelCount = 30;
 		boolean flag = true;
 		int page = 1;
 		int count = 10;
-		while (hostels.size() < 50 && flag) {
+		while (hostels.size() < hostelCount && flag) {
 
 			List<Hostel> hostels2 = hostelDao.searchHostels2(rangePrice, rangeSpace, page, count);
 			if (hostels2 == null || hostels2.size() == 0) {
