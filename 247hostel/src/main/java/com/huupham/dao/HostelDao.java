@@ -15,6 +15,47 @@ import com.huupham.webconfig.HibernateConfig;
 @Repository
 public class HostelDao {
 
+	// Lấy những nhà trọ mới nhất
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public List<Hostel> getHostels(int page, int count, int isCensored) {
+		// TODO Auto-generated method stub
+
+		SessionFactory factory = HibernateConfig.getSessionFactory();
+		Session session = factory.getCurrentSession();
+
+		try {
+			// Start transaction
+			session.getTransaction().begin();
+
+			// Query data
+			String sql = "from Hostel order by id desc";
+			
+			if(isCensored != -2) {
+				sql = "from Hostel where isCensored = " + isCensored + " order by id desc";
+			}
+			
+			System.out.println(sql);
+			
+			Query query = session.createQuery(sql);
+			query.setFirstResult((page - 1) * count); // page >= 1
+			query.setMaxResults(count);
+			List<Hostel> hostels = query.list();
+
+			// Commit data
+			session.getTransaction().commit();
+
+			return hostels;
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+			// Rollback data
+			session.getTransaction().rollback();
+
+			return null;
+		}
+	}
+
 	// Lấy những nhà trọ mới nhất đã được phê duyệt
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public List<Hostel> getNewHostels_IsCensored(int page, int count) {

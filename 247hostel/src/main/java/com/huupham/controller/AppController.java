@@ -24,7 +24,9 @@ import org.springframework.web.multipart.MultipartFile;
 import com.huupham.dao.AuthorizationDao;
 import com.huupham.dao.AvatarDao;
 import com.huupham.dao.CityDao;
+import com.huupham.dao.DepartmentDao;
 import com.huupham.dao.DistrictDao;
+import com.huupham.dao.EmployeeDao;
 import com.huupham.dao.HostelDao;
 import com.huupham.dao.ImageDao;
 import com.huupham.dao.PostDao;
@@ -35,7 +37,9 @@ import com.huupham.dao.VideoDao;
 import com.huupham.entities.Authorization;
 import com.huupham.entities.Avatar;
 import com.huupham.entities.City;
+import com.huupham.entities.Department;
 import com.huupham.entities.District;
+import com.huupham.entities.Employee;
 import com.huupham.entities.Hostel;
 import com.huupham.entities.Image;
 import com.huupham.entities.Rate;
@@ -81,6 +85,12 @@ public class AppController {
 
 	@Autowired
 	AuthorizationDao authorizationDao;
+
+	@Autowired
+	EmployeeDao employeeDao;
+
+	@Autowired
+	DepartmentDao departmentDao;
 
 	@GetMapping
 	@RequestMapping("/")
@@ -343,10 +353,14 @@ public class AppController {
 
 			case 2: // employee
 
-//					Employee employee = employeeService.selectEmployeeByIdUser(user.getIdUser());
-//					employee.setUser(user);
-//					modelMap.addAttribute("employee", employee);
-//					return "employee-info";
+//				Employee employee = employeeDao.getEmployeeByUser(user);
+//				Department department = departmentDao.getDepartmentById(employee.getDepartment().getId());
+//				
+//				modelMap.addAttribute("employee", employee);
+//				modelMap.addAttribute("department", department);
+//				
+//				
+//				return "admin-user-profile";
 
 			case 1: // admin
 
@@ -947,10 +961,219 @@ public class AppController {
 	}
 
 	@GetMapping
-	@RequestMapping("404-error")
-	public String get404error(HttpServletRequest request) {
+	@RequestMapping("admin")
+	public String getAdmin(HttpServletRequest request, ModelMap modelMap) {
 
-		return "404";
+		HttpSession session = request.getSession();
+		User userSession = (User) session.getAttribute("user");
+		if (userSession != null) {
+
+			User user = userDao.getUserById(userSession.getId());
+			if (user != null) {
+
+				Avatar avatar = avatarDao.getAvatarByIdUser(user.getId());
+
+				session.setAttribute("user", user);
+				modelMap.addAttribute("avatar", avatar);
+
+				switch (user.getAuthorization().getId()) {
+				case 3: // user
+					return "redirect:/";
+
+				case 2: // employee
+					return "admin-index";
+
+				case 1: // admin
+					return "admin-index";
+
+				default:
+					return "redirect:/";
+				}
+			} else {
+				session.invalidate();
+				return "redirect:/admin/sign-in";
+			}
+		} else {
+			session.invalidate();
+			return "redirect:/admin/sign-in";
+		}
+	}
+
+	@GetMapping
+	@RequestMapping("admin/index")
+	public String getAdminIndex(HttpServletRequest request, ModelMap modelMap) {
+
+		return "redirect:/admin";
+	}
+
+	@GetMapping
+	@RequestMapping("admin/sign-in")
+	public String getAdminSignIn() {
+
+		return "admin-sign-in";
+	}
+
+	@PostMapping
+	@RequestMapping("admin/signIn")
+	public String postAdminSignIn(@RequestParam String username, @RequestParam String password, ModelMap modelMap,
+			HttpServletRequest request) {
+
+		HttpSession session = request.getSession();
+//		session.invalidate();
+
+		String passwordEncodeMd5 = PasswordEncodeMD5.createPasswordEncodeMD5(password);
+
+		User user = userDao.checkLogin(username, passwordEncodeMd5);
+		if (user != null) { // Login success
+
+			session.setAttribute("user", user);
+
+			return "redirect:/admin";
+		} else { // Login fail
+
+			session.invalidate();
+			modelMap.addAttribute("message", "Sai tài khoản hoặc mật khẩu. Đăng nhập lại!");
+			return "admin-sign-in";
+		}
+	}
+
+	@GetMapping
+	@RequestMapping("admin/user-profile")
+	public String getAdminUserProfile(HttpServletRequest request, ModelMap modelMap) {
+
+		HttpSession session = request.getSession();
+		User userSession = (User) session.getAttribute("user");
+		if (userSession != null) {
+
+			User user = userDao.getUserById(userSession.getId());
+			if (user != null) {
+
+				Avatar avatar = avatarDao.getAvatarByIdUser(user.getId());
+				Employee employee = employeeDao.getEmployeeByUser(user);
+				Department department = departmentDao.getDepartmentById(employee.getDepartment().getId());
+
+				session.setAttribute("user", user);
+				modelMap.addAttribute("avatar", avatar);
+				modelMap.addAttribute("employee", employee);
+				modelMap.addAttribute("department", department);
+
+				switch (user.getAuthorization().getId()) {
+				case 3: // user
+					return "redirect:/";
+
+				case 2: // employee
+					return "admin-user-profile";
+
+				case 1: // admin
+					return "admin-user-profile";
+
+				default:
+					return "redirect:/";
+				}
+			} else {
+				session.invalidate();
+				return "redirect:/admin/sign-in";
+			}
+		} else {
+			session.invalidate();
+			return "redirect:/admin/sign-in";
+		}
+	}
+
+	@GetMapping
+	@RequestMapping("admin/users-manage")
+	public String getAdminUsersManage(HttpServletRequest request, ModelMap modelMap) {
+
+		HttpSession session = request.getSession();
+		User userSession = (User) session.getAttribute("user");
+		if (userSession != null) {
+
+			User user = userDao.getUserById(userSession.getId());
+			if (user != null) {
+
+				//
+				Avatar avatar = avatarDao.getAvatarByIdUser(user.getId());
+				Employee employee = employeeDao.getEmployeeByUser(user);
+				Department department = departmentDao.getDepartmentById(employee.getDepartment().getId());
+
+				session.setAttribute("user", user);
+				modelMap.addAttribute("avatar", avatar);
+				modelMap.addAttribute("employee", employee);
+				modelMap.addAttribute("department", department);
+				
+				//
+				List<User> users = userDao.getUsers(1, 10);
+				modelMap.addAttribute("users", users);
+
+				switch (user.getAuthorization().getId()) {
+				case 3: // user
+					return "redirect:/";
+
+				case 2: // employee
+					return "admin-users-manage";
+
+				case 1: // admin
+					return "admin-users-manage";
+
+				default:
+					return "redirect:/";
+				}
+			} else {
+				session.invalidate();
+				return "redirect:/admin/sign-in";
+			}
+		} else {
+			session.invalidate();
+			return "redirect:/admin/sign-in";
+		}
+	}
+
+	@GetMapping
+	@RequestMapping("admin/hostels-manage")
+	public String getAdminHostelsManage(HttpServletRequest request, ModelMap modelMap) {
+
+		HttpSession session = request.getSession();
+		User userSession = (User) session.getAttribute("user");
+		if (userSession != null) {
+
+			User user = userDao.getUserById(userSession.getId());
+			if (user != null) {
+
+				//
+				Avatar avatar = avatarDao.getAvatarByIdUser(user.getId());
+				Employee employee = employeeDao.getEmployeeByUser(user);
+				Department department = departmentDao.getDepartmentById(employee.getDepartment().getId());
+
+				session.setAttribute("user", user);
+				modelMap.addAttribute("avatar", avatar);
+				modelMap.addAttribute("employee", employee);
+				modelMap.addAttribute("department", department);
+				
+				//
+				List<Hostel> hostels = hostelDao.getHostels(1, 10, -2);
+				modelMap.addAttribute("hostels", hostels);
+
+				switch (user.getAuthorization().getId()) {
+				case 3: // user
+					return "redirect:/";
+
+				case 2: // employee
+					return "admin-hostels-manage";
+
+				case 1: // admin
+					return "admin-hostels-manage";
+
+				default:
+					return "redirect:/";
+				}
+			} else {
+				session.invalidate();
+				return "redirect:/admin/sign-in";
+			}
+		} else {
+			session.invalidate();
+			return "redirect:/admin/sign-in";
+		}
 	}
 
 }

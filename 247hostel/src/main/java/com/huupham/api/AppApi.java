@@ -725,4 +725,121 @@ public class AppApi {
 		return html;
 	}
 
+	@GetMapping
+	@RequestMapping(value = "getUsers", produces = "text/plain;charset=UTF-8")
+	@ResponseBody
+	public String getUsers(@RequestParam String page, HttpServletRequest request) {
+
+		//
+		List<User> users = userDao.getUsers(Integer.parseInt(page), 10);
+
+		String html = "";
+
+		for (User user : users) {
+
+			html += "<tr>";
+			html += "<td>" + user.getId() + "</td>";
+			html += "<td><a href=\"#\" target=\"_blank\">" + user.getFullname() + "</a></td>";
+			html += "<td>" + user.getPhone() + "</td>";
+			html += "<td>" + user.getEmail() + "</td>";
+			html += "<td>" + user.getAddress() + "</td>";
+			html += "<td>" + user.getTimeRegister() + "</td>";
+			html += "<td>";
+
+			html += "<div class=\"hidden-sm hidden-xs btn-group\">";
+			html += "<button class=\"btn btn-xs btn-success\"><i class=\"ace-icon fa fa-check bigger-120\"></i></button>";
+			html += "<button class=\"btn btn-xs btn-info\"><i class=\"ace-icon fa fa-pencil bigger-120\"></i></button>";
+			html += "<button class=\"btn btn-xs btn-danger\"><i class=\"ace-icon fa fa-trash-o bigger-120\"></i></button>";
+			html += "<button class=\"btn btn-xs btn-warning\"><i class=\"ace-icon fa fa-flag bigger-120\"></i></button>";
+			html += "</div>";
+
+			html += "</td>";
+			html += "</tr>";
+		}
+
+		return html;
+	}
+
+	@GetMapping
+	@RequestMapping(value = "getHostels", produces = "text/plain;charset=UTF-8")
+	@ResponseBody
+	public String getHostels(@RequestParam String page, @RequestParam String isCensored, HttpServletRequest request) {
+
+		//
+		List<Hostel> hostels = hostelDao.getHostels(Integer.parseInt(page), 10, Integer.parseInt(isCensored));
+
+		String html = "";
+
+		if(hostels.size() > 0) {
+			for (Hostel hostel : hostels) {
+
+				html += "<tr>";
+				html += "<td>" + hostel.getId() + "</td>";
+				html += "<td class=\"title\"><span><a href=\"../hostel-detail/" + hostel.getId() + "\" target=\"_blank\">"
+						+ hostel.getTitle() + "</a></span></td>";
+				html += "<td>" + hostel.getPrice() + "</td>";
+				html += "<td>" + hostel.getSpace() + "</td>";
+				html += "<td><select id=\"select-censored-"+ hostel.getId() +"\" class=\"select-censored-"+ String.valueOf(hostel.getIsCensored()) +"\" onChange=\"updateCensored("+ hostel.getId() +")\">";
+				
+				if(hostel.getIsCensored() == 0) {
+					html += "<option value=\"0\">Đang đợi phê duyệt</option><option value=\"1\">Đã phê duyệt</option><option value=\"-1\">Không được phê duyệt</option>";
+	;			}
+				else if(hostel.getIsCensored() == 1) {
+					html += "<option value=\"1\">Đã phê duyệt</option><option value=\"0\">Đang đợi phê duyệt</option><option value=\"-1\">Không được phê duyệt</option>";
+				}
+				else {
+					html += "<option value=\"-1\">Không được phê duyệt</option><option value=\"0\">Đang đợi phê duyệt</option><option value=\"1\">Đã phê duyệt</option>";
+				}
+				
+				html += "</select></td>";
+				html += "<td>";
+						
+				if(hostel.isIsRented() == true) {
+					html += "<button class=\"btn btn-xs btn-success\">Đã cho thuê</button>";
+				}
+				else {
+					html += "<button class=\"btn btn-xs btn-white btn-default\">Chưa cho thuê</button>";
+				}
+
+				html += "</td>";
+				html += "<td>" + hostel.getTimestamp() + "</td>";
+				html += "<td><div class=\"hidden-sm hidden-xs btn-group\">";
+				html += "<button class=\"btn btn-xs btn-success\"><i class=\"ace-icon fa fa-check bigger-120\"></i></button>";
+				html += "<button class=\"btn btn-xs btn-info\"><i class=\"ace-icon fa fa-pencil bigger-120\"></i></button>";
+				html += "<button class=\"btn btn-xs btn-danger\"><i class=\"ace-icon fa fa-trash-o bigger-120\"></i></button>";
+				html += "<button class=\"btn btn-xs btn-warning\"><i class=\"ace-icon fa fa-flag bigger-120\"></i></button>";
+				html += "</div></td>";
+				html += "</tr>";
+			}
+		}
+
+		return html;
+	}
+
+	@GetMapping
+	@RequestMapping(value = "updateCensored", produces = "text/plain;charset=UTF-8")
+	@ResponseBody
+	public String updateCensored(@RequestParam String idHostel, @RequestParam String isCensored,
+			HttpServletRequest request) {
+
+		int idHostelInt = Integer.parseInt(idHostel);
+		int isCensoredInt = Integer.parseInt(isCensored);
+		
+		System.out.println(idHostel + "-" + isCensored);
+
+		Hostel hostel = hostelDao.getHostelById(idHostelInt);
+		if (hostel != null) {
+			hostel.setIsCensored(isCensoredInt);
+
+			Hostel hostelUpdate = hostelDao.updateHostel(hostel);
+			if (hostelUpdate != null) {
+				return "true";
+			} else {
+				return "false";
+			}
+		} else {
+			return "false";
+		}
+	}
+
 }
