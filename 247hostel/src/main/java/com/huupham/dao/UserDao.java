@@ -1,5 +1,9 @@
 package com.huupham.dao;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -12,13 +16,12 @@ import com.huupham.webconfig.HibernateConfig;
 
 @Repository
 public class UserDao {
-	
-	public String getUserInfo(User user) {		
-		
-		return (user.getId() +"|"+ user.getAuthorization().getId() +"|"+ user.getFullname() 
-			 +"|"+  user.getEmail() +"|"+ user.getPhone() +"|"+ user.getAddress() 
-			  +"|"+ user.getPassword() +"|"+ user.getBirthday() +"|"+ user.getTimeRegister() 
-			   +"|"+ user.isGender());
+
+	public String getUserInfo(User user) {
+
+		return (user.getId() + "|" + user.getAuthorization().getId() + "|" + user.getFullname() + "|" + user.getEmail()
+				+ "|" + user.getPhone() + "|" + user.getAddress() + "|" + user.getPassword() + "|" + user.getBirthday()
+				+ "|" + user.getTimeRegister() + "|" + user.isGender());
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -233,13 +236,12 @@ public class UserDao {
 
 			// Commit data
 			session.getTransaction().commit();
-			
+
 			// Get user save
 			User userSave = null;
-			if(!user.getEmail().trim().equals("")) {
+			if (!user.getEmail().trim().equals("")) {
 				userSave = getUserByUsername(user.getEmail());
-			}
-			else if(!user.getPhone().trim().equals("")) {
+			} else if (!user.getPhone().trim().equals("")) {
 				userSave = getUserByUsername(user.getPhone());
 			}
 
@@ -270,7 +272,7 @@ public class UserDao {
 
 			// Commit data
 			session.getTransaction().commit();
-			
+
 			// Get user update
 			User userUpdate = getUserById(user.getId());
 
@@ -312,6 +314,164 @@ public class UserDao {
 
 			return false;
 		}
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public List<User> getUsers() {
+		// TODO Auto-generated method stub
+
+		SessionFactory factory = HibernateConfig.getSessionFactory();
+		Session session = factory.getCurrentSession();
+
+		try {
+			// Start transaction
+			session.getTransaction().begin();
+
+			// Query data
+			String sql = "from User order by id desc";
+			Query query = session.createQuery(sql);
+			List<User> users = query.list();
+
+			// Commit data
+			session.getTransaction().commit();
+
+			return users;
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+			// Rollback data
+			session.getTransaction().rollback();
+
+			return null;
+		}
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public List<User> getUsersRegisterByTime(int time, int timeType) {
+		// TODO Auto-generated method stub
+
+		Date date = new Date();
+		LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		int year = localDate.getYear();
+		int month = localDate.getMonthValue();
+//		int day = localDate.getDayOfMonth();
+
+//		System.out.println(localDate);
+//		System.out.println(year);
+//		System.out.println(month);
+//		System.out.println(day);
+
+		String sql = "";
+		switch (timeType) {
+		case -1:
+			// select all
+			sql = "from User order by id desc";
+			break;
+
+		case 0:
+			// select by date
+			sql = "from User where timeRegister like '" + year + "-" + month + "-" + time + "%' order by id desc";
+			break;
+
+		case 1:
+			// select by month
+			sql = "from User where timeRegister like '" + year + "-" + time + "-%' order by id desc";
+			break;
+
+		case 2:
+			// select by year
+			sql = "from User where timeRegister like '" + time + "-%' order by id desc";
+			break;
+
+		default:
+			// select all
+			sql = "from User order by id desc";
+			break;
+		}
+
+//		System.out.println(sql);
+
+		SessionFactory factory = HibernateConfig.getSessionFactory();
+		Session session = factory.getCurrentSession();
+
+		try {
+			// Start transaction
+			session.getTransaction().begin();
+
+			// Query data
+//			String sql = "from User order by id desc";
+			Query query = session.createQuery(sql);
+			List<User> users = query.list();
+
+			// Commit data
+			session.getTransaction().commit();
+
+			return users;
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+			// Rollback data
+			session.getTransaction().rollback();
+
+			return null;
+		}
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public List<Integer> getUsersRegisterCountByTime(int timeType) {
+		// TODO Auto-generated method stub
+
+		List<Integer> usersRegisterCountByTime = new ArrayList();
+
+		Date date = new Date();
+		LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		int year = localDate.getYear();
+		int month = localDate.getMonthValue();
+		int day = localDate.getDayOfMonth();
+
+//		System.out.println(localDate);
+//		System.out.println(year);
+//		System.out.println(month);
+//		System.out.println(day);
+
+		switch (timeType) {
+		case -1:
+			// select all
+			usersRegisterCountByTime.add(getUsers().size());
+			break;
+
+		case 0:
+			// select by date
+			for (int i = 1; i <= day; i++) {
+				usersRegisterCountByTime.add(getUsersRegisterByTime(i, timeType).size());
+			}
+			break;
+
+		case 1:
+			// select by month
+			for (int i = 1; i <= month; i++) {
+				usersRegisterCountByTime.add(getUsersRegisterByTime(i, timeType).size());
+			}
+			break;
+
+		case 2:
+			// select by year
+			for (int i = (year - 5); i <= year; i++) {
+				usersRegisterCountByTime.add(getUsersRegisterByTime(i, timeType).size());
+			}
+			break;
+
+		default:
+			// select all
+			usersRegisterCountByTime.add(getUsers().size());
+			break;
+		}
+
+//		System.out.println(usersRegisterCountByTime);
+
+		return usersRegisterCountByTime;
 	}
 
 }

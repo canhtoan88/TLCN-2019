@@ -9,7 +9,7 @@ public class RangePrice {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-
+	
 	public RangePrice(int minPrice, int maxPrice) {
 		super();
 		this.minPrice = minPrice;

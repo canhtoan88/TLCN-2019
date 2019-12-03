@@ -58,7 +58,7 @@
         // Initialize and add the map
         function initMap() {
 
-            zoom = 14;
+            zoom = 13;
             distance = 5000; // meter
 
             createMap();

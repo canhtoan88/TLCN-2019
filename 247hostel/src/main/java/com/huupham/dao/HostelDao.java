@@ -1,5 +1,9 @@
 package com.huupham.dao;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -14,6 +18,28 @@ import com.huupham.webconfig.HibernateConfig;
 
 @Repository
 public class HostelDao {
+	
+	private RangePrice rangePrice1 = new RangePrice(0, 2000000);
+	private RangePrice rangePrice2 = new RangePrice(2000000, 3000000);
+	private RangePrice rangePrice3 = new RangePrice(3000000, 4000000);
+	private RangePrice rangePrice4 = new RangePrice(4000000, 6000000);
+	private RangePrice rangePrice5 = new RangePrice(6000000, 10000000);
+	private RangePrice rangePrice6 = new RangePrice(10000000, 999999999);
+	
+	private List<RangePrice> rangePrices = null;	
+
+	public HostelDao() {
+		super();
+		// TODO Auto-generated constructor stub
+		
+		rangePrices = new ArrayList<>();
+		rangePrices.add(rangePrice1);
+		rangePrices.add(rangePrice2);
+		rangePrices.add(rangePrice3);
+		rangePrices.add(rangePrice4);
+		rangePrices.add(rangePrice5);
+		rangePrices.add(rangePrice6);
+	}
 
 	// Lấy những nhà trọ mới nhất
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -34,7 +60,7 @@ public class HostelDao {
 				sql = "from Hostel where isCensored = " + isCensored + " order by id desc";
 			}
 			
-			System.out.println(sql);
+//			System.out.println(sql);
 			
 			Query query = session.createQuery(sql);
 			query.setFirstResult((page - 1) * count); // page >= 1
@@ -597,7 +623,7 @@ public class HostelDao {
 			session.getTransaction().begin();
 
 			// Query data
-			String sql = "from Hostel";
+			String sql = "from Hostel order by id desc";
 			Query query = session.createQuery(sql);
 			List<Hostel> hostels = query.list();
 
@@ -614,6 +640,205 @@ public class HostelDao {
 
 			return null;
 		}
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public List<Hostel> getHostelsByRented(boolean isRented) {
+		// TODO Auto-generated method stub
+
+		SessionFactory factory = HibernateConfig.getSessionFactory();
+		Session session = factory.getCurrentSession();
+
+		try {
+			// Start transaction
+			session.getTransaction().begin();
+
+			// Query data
+			String sql = "from Hostel where isRented = " + isRented + " order by id desc";
+			Query query = session.createQuery(sql);
+			List<Hostel> hostels = query.list();
+
+			// Commit data
+			session.getTransaction().commit();
+
+			return hostels;
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+			// Rollback data
+			session.getTransaction().rollback();
+
+			return null;
+		}
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public List<Hostel> getHostelsByRangePrice(int rangePrice) {
+		// TODO Auto-generated method stub
+
+		SessionFactory factory = HibernateConfig.getSessionFactory();
+		Session session = factory.getCurrentSession();
+
+		try {
+			// Start transaction
+			session.getTransaction().begin();
+
+			// Query data
+			String sql = "from Hostel order by id desc";
+			
+			if(rangePrice != 0) {
+				if(rangePrices.get(rangePrice - 1) != null) {
+					sql = "from Hostel where price >= "+rangePrices.get(rangePrice - 1).getMinPrice()
+							+" and price < "+rangePrices.get(rangePrice - 1).getMaxPrice()+" order by id desc";
+				}
+			}
+			
+//			System.out.println(sql);
+			
+			Query query = session.createQuery(sql);
+			List<Hostel> hostels = query.list();
+
+			// Commit data
+			session.getTransaction().commit();
+
+			return hostels;
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+			// Rollback data
+			session.getTransaction().rollback();
+
+			return null;
+		}
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public List<Hostel> getHostelsPostByTime(int time, int timeType) {
+		// TODO Auto-generated method stub
+
+		Date date = new Date();
+		LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		int year = localDate.getYear();
+		int month = localDate.getMonthValue();
+//		int day = localDate.getDayOfMonth();
+
+//		System.out.println(localDate);
+//		System.out.println(year);
+//		System.out.println(month);
+//		System.out.println(day);
+
+		String sql = "";
+		switch (timeType) {
+		case -1:
+			// select all
+			sql = "from Hostel order by id desc";
+			break;
+
+		case 0:
+			// select by date
+			sql = "from Hostel where timestamp like '" + year + "-" + month + "-" + time + "%' order by id desc";
+			break;
+
+		case 1:
+			// select by month
+			sql = "from Hostel where timestamp like '" + year + "-" + time + "-%' order by id desc";
+			break;
+
+		case 2:
+			// select by year
+			sql = "from Hostel where timestamp like '" + time + "-%' order by id desc";
+			break;
+
+		default:
+			// select all
+			sql = "from Hostel order by id desc";
+			break;
+		}
+
+//		System.out.println(sql);
+
+		SessionFactory factory = HibernateConfig.getSessionFactory();
+		Session session = factory.getCurrentSession();
+
+		try {
+			// Start transaction
+			session.getTransaction().begin();
+
+			// Query data
+//			String sql = "from Hostel order by id desc";
+			Query query = session.createQuery(sql);
+			List<Hostel> hostels = query.list();
+
+			// Commit data
+			session.getTransaction().commit();
+
+			return hostels;
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+			// Rollback data
+			session.getTransaction().rollback();
+
+			return null;
+		}
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public List<Integer> getHostelsPostCountByTime(int timeType) {
+		// TODO Auto-generated method stub
+
+		List<Integer> hostelsPostCountByTime = new ArrayList();
+
+		Date date = new Date();
+		LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		int year = localDate.getYear();
+		int month = localDate.getMonthValue();
+		int day = localDate.getDayOfMonth();
+
+//		System.out.println(localDate);
+//		System.out.println(year);
+//		System.out.println(month);
+//		System.out.println(day);
+
+		switch (timeType) {
+		case -1:
+			// select all
+			hostelsPostCountByTime.add(getHostels().size());
+			break;
+
+		case 0:
+			// select by date
+			for (int i = 1; i <= day; i++) {
+				hostelsPostCountByTime.add(getHostelsPostByTime(i, timeType).size());
+			}
+			break;
+
+		case 1:
+			// select by month
+			for (int i = 1; i <= month; i++) {
+				hostelsPostCountByTime.add(getHostelsPostByTime(i, timeType).size());
+			}
+			break;
+
+		case 2:
+			// select by year
+			for (int i = (year - 5); i <= year; i++) {
+				hostelsPostCountByTime.add(getHostelsPostByTime(i, timeType).size());
+			}
+			break;
+
+		default:
+			// select all
+			hostelsPostCountByTime.add(getHostels().size());
+			break;
+		}
+
+//		System.out.println(hostelsPostCountByTime);
+
+		return hostelsPostCountByTime;
 	}
 
 }

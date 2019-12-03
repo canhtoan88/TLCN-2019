@@ -20,11 +20,10 @@
         .isRented {
             padding: 2px 4px;
             cursor: pointer;
-            border-radius: 0.5em;
         }
 
         .isRented-True {
-            background-color: red;
+            background-color: #FA5858;
             color: white;
         }
 

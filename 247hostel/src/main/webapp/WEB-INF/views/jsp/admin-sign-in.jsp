@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta charset="utf-8" />
     <title>Đăng nhập</title>
+    <link rel="shortcut icon" href="../resources/icons/favicon.ico" />
 
     <meta name="description" content="User login page" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
@@ -46,7 +47,7 @@
                     <div class="login-container">
                         <div class="center">
                             <h1>
-                                <i class="ace-icon fa fa-leaf green"></i>
+                                <i class="ace-icon fa fa-home green"></i>
                                 <span class="red">247</span>
                                 <span class="white" id="id-text2">Hostel</span>
                             </h1>

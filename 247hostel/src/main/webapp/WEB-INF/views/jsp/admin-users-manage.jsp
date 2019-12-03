@@ -8,6 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta charset="utf-8" />
     <title>247 Hostel - Admin</title>
+    <link rel="shortcut icon" href="../resources/icons/favicon.ico" />
 
     <meta name="description" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
@@ -78,9 +79,9 @@
             </button>
 
             <div class="navbar-header pull-left">
-                <a href="index.html" class="navbar-brand">
+                <a href="home" class="navbar-brand">
                     <small>
-                        <i class="fa fa-leaf"></i>
+                        <i class="fa fa-home"></i>
                         247 Hostel
                     </small>
                 </a>
@@ -438,7 +439,9 @@
                     <div class="page-header">
                         <h1>
                             Quản lý users
-                            <i class="ace-icon fa fa-angle-double-right"></i>
+                            <small>
+                                <i class="ace-icon fa fa-angle-double-right"></i>                                
+                            </small>
                         </h1>
                     </div>
 

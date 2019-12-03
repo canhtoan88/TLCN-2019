@@ -198,12 +198,12 @@
                                             </div>
                                             <div class="user_profile_account_body">
                                                 <ul>
-                                                    <li><a href="#"><i class="fa fa-angle-right" aria-hidden="true"></i> Số lượng nhà trọ: <span class="other-info">${countHouse }</span></a></li>
-                                                    <li><a href="#"><i class="fa fa-angle-right" aria-hidden="true"></i> Số lượng nhà trọ đã cho thuê: <span class="other-info">${countHouseIsRented }</span></a></li>
-                                                    <li><a href="#"><i class="fa fa-angle-right" aria-hidden="true"></i> Số lượng nhà trọ chưa cho thuê: <span class="other-info">${countHouseIsNotRented }</span></a></li>
-                                                    <li><a href="#"><i class="fa fa-angle-right" aria-hidden="true"></i> Số lượng nhà trọ đợi phê duyệt: <span class="other-info">${countHouseIsWaittingCensored }</span></a></li>
-                                                    <li><a href="#"><i class="fa fa-angle-right" aria-hidden="true"></i> Số lượng nhà trọ đã phê duyệt: <span class="other-info">${countHouseIsCensored }</span></a></li>
-                                                    <li><a href="#"><i class="fa fa-angle-right" aria-hidden="true"></i> Số lượng nhà trọ chưa phê duyệt: <span class="other-info">${countHouseIsNotCensored }</span></a></li>
+                                                    <li><a href="user-manage-post"><i class="fa fa-angle-right" aria-hidden="true"></i> Số lượng nhà trọ: <span class="other-info">${countHouse }</span></a></li>
+                                                    <li><a href="user-manage-post"><i class="fa fa-angle-right" aria-hidden="true"></i> Số lượng nhà trọ đã cho thuê: <span class="other-info">${countHouseIsRented }</span></a></li>
+                                                    <li><a href="user-manage-post"><i class="fa fa-angle-right" aria-hidden="true"></i> Số lượng nhà trọ chưa cho thuê: <span class="other-info">${countHouseIsNotRented }</span></a></li>
+                                                    <li><a href="user-manage-post"><i class="fa fa-angle-right" aria-hidden="true"></i> Số lượng nhà trọ đợi phê duyệt: <span class="other-info">${countHouseIsWaittingCensored }</span></a></li>
+                                                    <li><a href="user-manage-post"><i class="fa fa-angle-right" aria-hidden="true"></i> Số lượng nhà trọ đã phê duyệt: <span class="other-info">${countHouseIsCensored }</span></a></li>
+                                                    <li><a href="user-manage-post"><i class="fa fa-angle-right" aria-hidden="true"></i> Số lượng nhà trọ chưa phê duyệt: <span class="other-info">${countHouseIsNotCensored }</span></a></li>
                                                     <hr />
                                                     <li>Ngày tham gia: <span>${user.getTimeRegister() }</span></li>
                                                 </ul>

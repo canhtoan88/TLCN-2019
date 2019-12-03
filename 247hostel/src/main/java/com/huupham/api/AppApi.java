@@ -601,14 +601,20 @@ public class AppApi {
 			} else {
 				for (int i = 0; i < hostels2.size(); i++) {
 
-					if (hostels2.get(i).getLocationLat() != -1 && hostels2.get(i).getLocationLng() != -1) {
+					if(hostels2.get(i) != null) {
+						try {
+							if (hostels2.get(i).getLocationLat() != -1 && hostels2.get(i).getLocationLng() != -1) {
 
-						double distance2 = DistanceCaculator.getDistanceTransferMeter(doubleLat, doubleLng,
-								hostels2.get(i).getLocationLat(), hostels2.get(i).getLocationLng());
+								double distance2 = DistanceCaculator.getDistanceTransferMeter(doubleLat, doubleLng,
+										hostels2.get(i).getLocationLat(), hostels2.get(i).getLocationLng());
 
-						if (distance2 < doubleDistance) {
+								if (distance2 < doubleDistance) {
 
-							hostels.add(hostels2.get(i));
+									hostels.add(hostels2.get(i));
+								}
+							}
+						} catch (Exception e) {
+							// TODO: handle exception
 						}
 					}
 				}

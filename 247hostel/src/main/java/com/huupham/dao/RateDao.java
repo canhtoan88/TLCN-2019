@@ -270,4 +270,35 @@ public class RateDao {
 		}
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public List<Rate> getRates() {
+		// TODO Auto-generated method stub
+
+		SessionFactory factory = HibernateConfig.getSessionFactory();
+		Session session = factory.getCurrentSession();
+
+		try {
+			// Start transaction
+			session.getTransaction().begin();
+
+			// Query data
+			String sql = "from Rate order by id desc";
+			Query query = session.createQuery(sql);
+			List<Rate> rates = query.getResultList();
+
+			// Commit data
+			session.getTransaction().commit();
+
+			return rates;
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+			// Rollback data
+			session.getTransaction().rollback();
+
+			return null;
+		}
+	}
+
 }

@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.huupham.dao.AuthorizationDao;
 import com.huupham.dao.AvatarDao;
 import com.huupham.dao.CityDao;
+import com.huupham.dao.CommentDao;
 import com.huupham.dao.DepartmentDao;
 import com.huupham.dao.DistrictDao;
 import com.huupham.dao.EmployeeDao;
@@ -46,6 +47,7 @@ import com.huupham.entities.Rate;
 import com.huupham.entities.Street;
 import com.huupham.entities.User;
 import com.huupham.entities.Video;
+import com.huupham.models.HostelRangePriceFull;
 import com.huupham.models.Post;
 import com.huupham.utilities.MyUploadFile;
 import com.huupham.utilities.PasswordEncodeMD5;
@@ -79,6 +81,9 @@ public class AppController {
 
 	@Autowired
 	RateDao rateDao;
+
+	@Autowired
+	CommentDao commentDao;
 
 	@Autowired
 	PostDao postDao;
@@ -182,6 +187,13 @@ public class AppController {
 		session.invalidate();
 
 		return "redirect:/";
+	}
+
+	@GetMapping
+	@RequestMapping("admin/signOut")
+	public String getAdminSignOut(HttpServletRequest request) {
+
+		return getSignOut(request);
 	}
 
 	@GetMapping
@@ -981,6 +993,120 @@ public class AppController {
 					return "redirect:/";
 
 				case 2: // employee
+					return "redirect:/admin/admin-index";
+
+				case 1: // admin
+					return "redirect:/admin/admin-index";
+
+				default:
+					return "redirect:/";
+				}
+			} else {
+				session.invalidate();
+				return "redirect:/admin/sign-in";
+			}
+		} else {
+			session.invalidate();
+			return "redirect:/admin/sign-in";
+		}
+	}
+
+	@GetMapping
+	@RequestMapping("admin/index")
+	public String getAdminIndex(HttpServletRequest request, ModelMap modelMap) {
+
+		HttpSession session = request.getSession();
+		User userSession = (User) session.getAttribute("user");
+		if (userSession != null) {
+
+			User user = userDao.getUserById(userSession.getId());
+			if (user != null) {
+
+				Avatar avatar = avatarDao.getAvatarByIdUser(user.getId());
+				int hostelsCount = hostelDao.getHostels().size();
+				int usersCount = userDao.getUsers().size();
+				int hostelsRentedCount = hostelDao.getHostelsByRented(true).size();
+				int hostelsNotRentedCount = hostelDao.getHostelsByRented(false).size();
+				int ratesCount = rateDao.getRates().size();
+				int commentsCount = commentDao.getComments().size();
+
+				int hostelCountRangePrice1 = hostelDao.getHostelsByRangePrice(1).size();
+				int hostelCountRangePrice2 = hostelDao.getHostelsByRangePrice(2).size();
+				int hostelCountRangePrice3 = hostelDao.getHostelsByRangePrice(3).size();
+				int hostelCountRangePrice4 = hostelDao.getHostelsByRangePrice(4).size();
+				int hostelCountRangePrice5 = hostelDao.getHostelsByRangePrice(5).size();
+				int hostelCountRangePrice6 = hostelDao.getHostelsByRangePrice(6).size();
+
+				List<HostelRangePriceFull> hostelRangePriceFull = new ArrayList<>();
+				HostelRangePriceFull hostelRangePriceFull1 = new HostelRangePriceFull("Dưới 2 triệu",
+						hostelCountRangePrice1,
+						(double) Math.round((((double) (hostelCountRangePrice1)) * 100 / hostelsCount) * 100.0)
+								/ 100.0);
+				HostelRangePriceFull hostelRangePriceFull2 = new HostelRangePriceFull("2 - 3 triệu",
+						hostelCountRangePrice2,
+						(double) Math.round((((double) (hostelCountRangePrice2)) * 100 / hostelsCount) * 100.0)
+								/ 100.0);
+				HostelRangePriceFull hostelRangePriceFull3 = new HostelRangePriceFull("3 - 4 triệu",
+						hostelCountRangePrice3,
+						(double) Math.round((((double) (hostelCountRangePrice3)) * 100 / hostelsCount) * 100.0)
+								/ 100.0);
+				HostelRangePriceFull hostelRangePriceFull4 = new HostelRangePriceFull("4 - 6 triệu",
+						hostelCountRangePrice4,
+						(double) Math.round((((double) (hostelCountRangePrice4)) * 100 / hostelsCount) * 100.0)
+								/ 100.0);
+				HostelRangePriceFull hostelRangePriceFull5 = new HostelRangePriceFull("6 - 10 triệu",
+						hostelCountRangePrice5,
+						(double) Math.round((((double) (hostelCountRangePrice5)) * 100 / hostelsCount) * 100.0)
+								/ 100.0);
+				HostelRangePriceFull hostelRangePriceFull6 = new HostelRangePriceFull("Trên 10 triệu",
+						hostelCountRangePrice6,
+						(double) Math.round((((double) (hostelCountRangePrice6)) * 100 / hostelsCount) * 100.0)
+								/ 100.0);
+				hostelRangePriceFull.add(hostelRangePriceFull1);
+				hostelRangePriceFull.add(hostelRangePriceFull2);
+				hostelRangePriceFull.add(hostelRangePriceFull3);
+				hostelRangePriceFull.add(hostelRangePriceFull4);
+				hostelRangePriceFull.add(hostelRangePriceFull5);
+				hostelRangePriceFull.add(hostelRangePriceFull6);
+
+				String hostelsRangePriceCountString = "";
+				for (int i = 0; i < hostelRangePriceFull.size(); i++) {
+					hostelsRangePriceCountString += "-" + String.valueOf(hostelRangePriceFull.get(i).getPercent());
+				}
+
+//				List<Integer> usersRegisterCountByTime = userDao.getUsersRegisterCountByTime(-1);
+				List<Integer> usersRegisterCountByTime0 = userDao.getUsersRegisterCountByTime(0);
+				List<Integer> usersRegisterCountByTime1 = userDao.getUsersRegisterCountByTime(1);
+				List<Integer> usersRegisterCountByTime2 = userDao.getUsersRegisterCountByTime(2);
+
+//				List<Integer> hostelsPostCountByTime = hostelDao.getHostelsPostCountByTime(-1);
+				List<Integer> hostelsPostCountByTime0 = hostelDao.getHostelsPostCountByTime(0);
+				List<Integer> hostelsPostCountByTime1 = hostelDao.getHostelsPostCountByTime(1);
+				List<Integer> hostelsPostCountByTime2 = hostelDao.getHostelsPostCountByTime(2);
+
+				session.setAttribute("user", user);
+				modelMap.addAttribute("avatar", avatar);
+				modelMap.addAttribute("hostelsCount", hostelsCount);
+				modelMap.addAttribute("usersCount", usersCount);
+				modelMap.addAttribute("hostelsRentedCount", hostelsRentedCount);
+				modelMap.addAttribute("hostelsNotRentedCount", hostelsNotRentedCount);
+				modelMap.addAttribute("ratesCount", ratesCount);
+				modelMap.addAttribute("commentsCount", commentsCount);
+				modelMap.addAttribute("hostelsRangePriceCountString", hostelsRangePriceCountString);
+				modelMap.addAttribute("hostelRangePriceFull", hostelRangePriceFull);
+
+				modelMap.addAttribute("usersRegisterCountByTime0", usersRegisterCountByTime0);
+				modelMap.addAttribute("usersRegisterCountByTime1", usersRegisterCountByTime1);
+				modelMap.addAttribute("usersRegisterCountByTime2", usersRegisterCountByTime2);
+				modelMap.addAttribute("hostelsPostCountByTime0", hostelsPostCountByTime0);
+				modelMap.addAttribute("hostelsPostCountByTime1", hostelsPostCountByTime1);
+				modelMap.addAttribute("hostelsPostCountByTime2", hostelsPostCountByTime2);
+
+				switch (user.getAuthorization().getId()) {
+				case 3: // user
+					return "redirect:/";
+
+				case 2: // employee
 					return "admin-index";
 
 				case 1: // admin
@@ -1000,10 +1126,10 @@ public class AppController {
 	}
 
 	@GetMapping
-	@RequestMapping("admin/index")
-	public String getAdminIndex(HttpServletRequest request, ModelMap modelMap) {
+	@RequestMapping("admin/home")
+	public String getHomeFromAdmin() {
 
-		return "redirect:/admin";
+		return "redirect:/";
 	}
 
 	@GetMapping
@@ -1028,7 +1154,7 @@ public class AppController {
 
 			session.setAttribute("user", user);
 
-			return "redirect:/admin";
+			return "redirect:/admin/index";
 		} else { // Login fail
 
 			session.invalidate();
@@ -1100,7 +1226,7 @@ public class AppController {
 				modelMap.addAttribute("avatar", avatar);
 				modelMap.addAttribute("employee", employee);
 				modelMap.addAttribute("department", department);
-				
+
 				//
 				List<User> users = userDao.getUsers(1, 10);
 				modelMap.addAttribute("users", users);
@@ -1148,7 +1274,7 @@ public class AppController {
 				modelMap.addAttribute("avatar", avatar);
 				modelMap.addAttribute("employee", employee);
 				modelMap.addAttribute("department", department);
-				
+
 				//
 				List<Hostel> hostels = hostelDao.getHostels(1, 10, -2);
 				modelMap.addAttribute("hostels", hostels);
@@ -1174,6 +1300,12 @@ public class AppController {
 			session.invalidate();
 			return "redirect:/admin/sign-in";
 		}
+	}
+
+	@GetMapping
+	@RequestMapping("admin/analytics")
+	public String getAdminAnalytics(HttpServletRequest request, ModelMap modelMap) {
+		return "redirect:/admin/index";
 	}
 
 }
