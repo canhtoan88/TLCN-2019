@@ -176,8 +176,8 @@
             // Add the circle for this city to the map.
             let cityCircle = new google.maps.Circle({
                 strokeColor: '#4CAF50',
-                strokeOpacity: 0.8,
-                strokeWeight: 1,
+                strokeOpacity: 0.6,
+                strokeWeight: 0.8,
                 fillColor: '#b0ffb3',
                 fillOpacity: 0.2,
                 map: map,
@@ -468,135 +468,137 @@
         <div class="home-right">
             <div id="map"></div>
 
+	        <%
+					if (session.getAttribute("user") != null) {
+				%>
+	        <div class="dropdown-user" id="dropdown-user" onmouseleave="disableDropdownUser()">
+	            <div class="dropdown-user-img">
+	                <img alt="" src="${avatar.getUrl() }" class="rounded-circle" />
+	            </div>
+	            <div class="dropdown-user-body" id="dropdown-user-body" onmouseleave="disableDropdownUser()">
+	                <div class="dropdown-user-body-sub"></div>
+	                <div class="dropdown-user-body-main">
+	                    <div class="dropdown-user-body-content">
+	                        <a href="user-info">
+	                            <img class="dropdown-user-body-content-image" alt="" src="resources/icons/user.svg" />
+	                            <span class="dropdown-user-body-content-title">
+	                                <b>${user.getFullname() }</b>
+	                            </span>
+	                        </a>
+	                    </div>
+	                    <hr class="dropdown-user-body-content-divide" />
+	                    <div class="dropdown-user-body-content">
+	                        <a href="user-info">
+	                            <img class="dropdown-user-body-content-image" alt="" src="resources/icons/edit.svg" />
+	                            <span class="dropdown-user-body-content-title"> Thông tin cá nhân </span>
+	                        </a>
+	                    </div>
+	                    <hr class="dropdown-user-body-content-divide" />
+	                    <div class="dropdown-user-body-content">
+	                        <a href="post">
+	                            <img class="dropdown-user-body-content-image" alt="" src="resources/icons/add.svg" />
+	                            <span class="dropdown-user-body-content-title"> Đăng nhà trọ </span>
+	                        </a>
+	                    </div>
+	                    <hr class="dropdown-user-body-content-divide" />
+	                    <div class="dropdown-user-body-content">
+	                        <a href="user-manage-post">
+	                            <img class="dropdown-user-body-content-image" alt="" src="resources/icons/list.svg" />
+	                            <span class="dropdown-user-body-content-title"> Quản lý nhà trọ </span>
+	                        </a>
+	                    </div>
+	                    <hr class="dropdown-user-body-content-divide" />
+	                    <div class="dropdown-user-body-content">
+	                        <a href="change-password">
+	                            <img class="dropdown-user-body-content-image" alt="" src="resources/icons/key.svg" />
+	                            <span class="dropdown-user-body-content-title"> Đổi mật khẩu </span>
+	                        </a>
+	                    </div>
+	                    <hr class="dropdown-user-body-content-divide" />
+	                    <div class="dropdown-user-body-content">
+	                        <a href="#">
+	                            <img class="dropdown-user-body-content-image" alt="" src="resources/icons/contact.svg" />
+	                            <span class="dropdown-user-body-content-title"> Liên hệ hỗ trợ </span>
+	                        </a>
+	                    </div>
+	                    <hr class="dropdown-user-body-content-divide" />
+	                    <div class="dropdown-user-body-content">
+	                        <a href="signOut">
+	                            <img class="dropdown-user-body-content-image" alt="" src="resources/icons/logout.svg" />
+	                            <span class="dropdown-user-body-content-title"> Thoát </span>
+	                        </a>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+	        <%
+					} else {
+				%>
+	        <div class="dropdown-user" id="dropdown-user">
+	            <div class="dropdown-user-img">
+	                <img src="resources/icons/menu.svg" class="rounded-circle" onclick="onUserDropdownClicked()" />
+	            </div>
+	            <div class="dropdown-user-body" id="dropdown-user-body" onmouseleave="disableDropdownUser()">
+	                <div class="dropdown-user-body-sub"></div>
+	                <div class="dropdown-user-body-main">
+	                    <div class="dropdown-user-body-content">
+	                        <a href="sign-in">
+	                            <img class="dropdown-user-body-content-image" alt="" src="resources/icons/login.svg" />
+	                            <span class="dropdown-user-body-content-title"> Đăng nhập </span>
+	                        </a>
+	                    </div>
+	                    <hr class="dropdown-user-body-content-divide" />
+	                    <div class="dropdown-user-body-content">
+	                        <a href="sign-up">
+	                            <img class="dropdown-user-body-content-image" alt="" src="resources/icons/signup.svg" />
+	                            <span class="dropdown-user-body-content-title"> Đăng ký </span>
+	                        </a>
+	                    </div>
+	                    <hr class="dropdown-user-body-content-divide" />
+	                    <div class="dropdown-user-body-content">
+	                        <a href="#">
+	                            <img class="dropdown-user-body-content-image" alt="" src="resources/icons/lock.svg" />
+	                            <span class="dropdown-user-body-content-title"> Quên mật khẩu </span>
+	                        </a>
+	                    </div>
+	                    <hr class="dropdown-user-body-content-divide" />
+	                    <div class="dropdown-user-body-content">
+	                        <a href="#">
+	                            <img class="dropdown-user-body-content-image" alt="" src="resources/icons/contact.svg" />
+	                            <span class="dropdown-user-body-content-title"> Liên hệ hỗ trợ</span>
+	                        </a>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+	        <%
+					}
+				%>
+	        <script>
+	            function onUserDropdownClicked() {
+	                let x = document.getElementById("dropdown-user-body");
+	                if (x.style.display === "block") {
+	                    x.style.display = "none";
+	                } else {
+	                    x.style.display = "block";
+	                }
+	            }
+	
+	            function disableDropdownUser() {
+	                /*let x = document.getElementById("dropdown-user-body");
+	                if (x.style.display === "block") {
+	                    x.style.display = "none";
+	                }*/
+	            	let x = document.getElementById("dropdown-user-body");
+	                if (x.style.display === "block") {
+	                    x.style.display = "none";
+	                }
+	            }
+	
+	        </script>
+	    </div>
+
         </div>
-
-        <%
-				if (session.getAttribute("user") != null) {
-			%>
-        <div class="dropdown-user" id="dropdown-user" onmouseleave="disableDropdownUser()">
-            <div class="dropdown-user-img">
-                <img alt="" src="${avatar.getUrl() }" class="rounded-circle" onclick="onUserDropdownClicked()" />
-            </div>
-            <div class="dropdown-user-body" id="dropdown-user-body">
-                <div class="dropdown-user-body-sub"></div>
-                <div class="dropdown-user-body-main">
-                    <div class="dropdown-user-body-content">
-                        <a href="user-info">
-                            <img class="dropdown-user-body-content-image" alt="" src="resources/icons/user.svg" />
-                            <span class="dropdown-user-body-content-title">
-                                <b>${user.getFullname() }</b>
-                            </span>
-                        </a>
-                    </div>
-                    <hr class="dropdown-user-body-content-divide" />
-                    <div class="dropdown-user-body-content">
-                        <a href="user-info">
-                            <img class="dropdown-user-body-content-image" alt="" src="resources/icons/edit.svg" />
-                            <span class="dropdown-user-body-content-title"> Thông tin cá nhân </span>
-                        </a>
-                    </div>
-                    <hr class="dropdown-user-body-content-divide" />
-                    <div class="dropdown-user-body-content">
-                        <a href="post">
-                            <img class="dropdown-user-body-content-image" alt="" src="resources/icons/add.svg" />
-                            <span class="dropdown-user-body-content-title"> Đăng nhà trọ </span>
-                        </a>
-                    </div>
-                    <hr class="dropdown-user-body-content-divide" />
-                    <div class="dropdown-user-body-content">
-                        <a href="user-manage-post">
-                            <img class="dropdown-user-body-content-image" alt="" src="resources/icons/list.svg" />
-                            <span class="dropdown-user-body-content-title"> Quản lý nhà trọ </span>
-                        </a>
-                    </div>
-                    <hr class="dropdown-user-body-content-divide" />
-                    <div class="dropdown-user-body-content">
-                        <a href="change-password">
-                            <img class="dropdown-user-body-content-image" alt="" src="resources/icons/key.svg" />
-                            <span class="dropdown-user-body-content-title"> Đổi mật khẩu </span>
-                        </a>
-                    </div>
-                    <hr class="dropdown-user-body-content-divide" />
-                    <div class="dropdown-user-body-content">
-                        <a href="#">
-                            <img class="dropdown-user-body-content-image" alt="" src="resources/icons/contact.svg" />
-                            <span class="dropdown-user-body-content-title"> Liên hệ hỗ trợ </span>
-                        </a>
-                    </div>
-                    <hr class="dropdown-user-body-content-divide" />
-                    <div class="dropdown-user-body-content">
-                        <a href="signOut">
-                            <img class="dropdown-user-body-content-image" alt="" src="resources/icons/logout.svg" />
-                            <span class="dropdown-user-body-content-title"> Thoát </span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <%
-				} else {
-			%>
-        <div class="dropdown-user" id="dropdown-user" onmouseleave="disableDropdownUser()">
-            <div class="dropdown-user-img">
-                <img src="resources/icons/menu.svg" class="rounded-circle" onclick="onUserDropdownClicked()" />
-            </div>
-            <div class="dropdown-user-body" id="dropdown-user-body">
-                <div class="dropdown-user-body-sub"></div>
-                <div class="dropdown-user-body-main">
-                    <div class="dropdown-user-body-content">
-                        <a href="sign-in">
-                            <img class="dropdown-user-body-content-image" alt="" src="resources/icons/login.svg" />
-                            <span class="dropdown-user-body-content-title"> Đăng nhập </span>
-                        </a>
-                    </div>
-                    <hr class="dropdown-user-body-content-divide" />
-                    <div class="dropdown-user-body-content">
-                        <a href="sign-up">
-                            <img class="dropdown-user-body-content-image" alt="" src="resources/icons/signup.svg" />
-                            <span class="dropdown-user-body-content-title"> Đăng ký </span>
-                        </a>
-                    </div>
-                    <hr class="dropdown-user-body-content-divide" />
-                    <div class="dropdown-user-body-content">
-                        <a href="#">
-                            <img class="dropdown-user-body-content-image" alt="" src="resources/icons/lock.svg" />
-                            <span class="dropdown-user-body-content-title"> Quên mật khẩu </span>
-                        </a>
-                    </div>
-                    <hr class="dropdown-user-body-content-divide" />
-                    <div class="dropdown-user-body-content">
-                        <a href="#">
-                            <img class="dropdown-user-body-content-image" alt="" src="resources/icons/contact.svg" />
-                            <span class="dropdown-user-body-content-title"> Liên hệ hỗ trợ</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <%
-				}
-			%>
-        <script>
-            function onUserDropdownClicked() {
-                let x = document.getElementById("dropdown-user-body");
-                if (x.style.display === "block") {
-                    x.style.display = "none";
-                } else {
-                    x.style.display = "block";
-                }
-            }
-
-            function disableDropdownUser() {
-                let x = document.getElementById("dropdown-user-body");
-                if (x.style.display === "block") {
-                    x.style.display = "none";
-                }
-            }
-
-        </script>
-    </div>
-
-    </div>
 
 </body>
 

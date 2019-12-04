@@ -371,12 +371,22 @@ public class UserDao {
 
 		case 0:
 			// select by date
-			sql = "from User where timeRegister like '" + year + "-" + month + "-" + time + "%' order by id desc";
+			if(time < 10) {
+				sql = "from User where timeRegister like '" + year + "-" + month + "-0" + time + "%' order by id desc";
+			}
+			else {
+				sql = "from User where timeRegister like '" + year + "-" + month + "-" + time + "%' order by id desc";
+			}
 			break;
 
 		case 1:
 			// select by month
-			sql = "from User where timeRegister like '" + year + "-" + time + "-%' order by id desc";
+			if(time < 10) {
+				sql = "from User where timeRegister like '" + year + "-0" + time + "-%' order by id desc";
+			}
+			else {
+				sql = "from User where timeRegister like '" + year + "-" + time + "-%' order by id desc";
+			}
 			break;
 
 		case 2:

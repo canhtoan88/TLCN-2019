@@ -101,6 +101,8 @@ public class AppController {
 	@RequestMapping("/")
 	public String getDefault(HttpServletRequest request, ModelMap modelMap) {
 
+//		getLatLngHostel();
+
 		List<City> cities = cityDao.getCities();
 
 		// get Ho Chi Minh city before
@@ -1306,6 +1308,69 @@ public class AppController {
 	@RequestMapping("admin/analytics")
 	public String getAdminAnalytics(HttpServletRequest request, ModelMap modelMap) {
 		return "redirect:/admin/index";
+	}
+
+	public void getLatLngHostel() {
+
+		getFullHostelAddressesWithEmptyLatLng();
+
+	}
+
+	public String getFullHostelAddressById(int id) {
+		Hostel hostel = hostelDao.getHostelById(id);
+
+		String address = "";
+		address += hostel.getId();
+		address += "-" + hostel.getHostelNumber();
+		address += " " + streetDao.getStreetById(hostel.getStreet().getId()).getName();
+		address += ", " + districtDao.getDistrictById(hostel.getDistrict().getId()).getName();
+		address += ", " + cityDao.getCityById(hostel.getCity().getId()).getName();
+
+//		System.out.println(address);
+
+		return address;
+	}
+
+	public String getFullHostelAddressByIdWithEmptyLatLng(int id) {
+		Hostel hostel = hostelDao.getHostelById(id);
+
+		String address = "";
+
+		try {
+			if (hostel.getLocationLat() != null && hostel.getLocationLng() != null) {
+
+			} else {
+				address = getFullHostelAddressById(hostel.getId());
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			address = getFullHostelAddressById(hostel.getId());
+		}
+
+//		System.out.println(address);
+
+		return address;
+	}
+
+	public String getFullHostelAddressesWithEmptyLatLng() {
+
+		String addresses = "";
+
+		List<Hostel> hostels = hostelDao.getHostels();
+
+//		System.out.println(hostels.size());
+
+		for (int i = 0; i < hostels.size(); i++) {
+			if (!getFullHostelAddressByIdWithEmptyLatLng(hostels.get(i).getId()).equals("")) {
+
+				addresses += getFullHostelAddressByIdWithEmptyLatLng(hostels.get(i).getId()) + ";";
+			}
+		}
+
+//		System.out.println(addresses);
+
+		return addresses;
+
 	}
 
 }

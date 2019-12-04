@@ -738,12 +738,23 @@ public class HostelDao {
 
 		case 0:
 			// select by date
-			sql = "from Hostel where timestamp like '" + year + "-" + month + "-" + time + "%' order by id desc";
+			if(time < 10) {
+				sql = "from Hostel where timestamp like '" + year + "-" + month + "-0" + time + "%' order by id desc";
+			}
+			else {
+				sql = "from Hostel where timestamp like '" + year + "-" + month + "-" + time + "%' order by id desc";
+			}
+			
 			break;
 
 		case 1:
 			// select by month
-			sql = "from Hostel where timestamp like '" + year + "-" + time + "-%' order by id desc";
+			if(time < 10) {
+				sql = "from Hostel where timestamp like '" + year + "-0" + time + "-%' order by id desc";
+			}
+			else {
+				sql = "from Hostel where timestamp like '" + year + "-" + time + "-%' order by id desc";
+			}
 			break;
 
 		case 2:
