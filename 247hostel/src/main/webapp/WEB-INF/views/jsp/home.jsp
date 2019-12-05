@@ -469,11 +469,11 @@
             <div id="map"></div>
 
 	        <%
-					if (session.getAttribute("user") != null) {
-				%>
-	        <div class="dropdown-user" id="dropdown-user" onmouseleave="disableDropdownUser()">
+				if (session.getAttribute("user") != null) {
+			%>
+	        <div class="dropdown-user" id="dropdown-user">
 	            <div class="dropdown-user-img">
-	                <img alt="" src="${avatar.getUrl() }" class="rounded-circle" />
+	                <img alt="" src="${avatar.getUrl() }" class="rounded-circle" onclick="onUserDropdownClicked()" />
 	            </div>
 	            <div class="dropdown-user-body" id="dropdown-user-body" onmouseleave="disableDropdownUser()">
 	                <div class="dropdown-user-body-sub"></div>
@@ -532,11 +532,11 @@
 	            </div>
 	        </div>
 	        <%
-					} else {
-				%>
+				} else {
+			%>
 	        <div class="dropdown-user" id="dropdown-user">
 	            <div class="dropdown-user-img">
-	                <img src="resources/icons/menu.svg" class="rounded-circle" onclick="onUserDropdownClicked()" />
+	                <img src="resources/icons/menu.svg" class="rounded-circle" onclick="onUserDropdownClicked()"/>
 	            </div>
 	            <div class="dropdown-user-body" id="dropdown-user-body" onmouseleave="disableDropdownUser()">
 	                <div class="dropdown-user-body-sub"></div>
@@ -571,9 +571,9 @@
 	                </div>
 	            </div>
 	        </div>
-	        <%
-					}
-				%>
+        	<%
+				}
+			%>
 	        <script>
 	            function onUserDropdownClicked() {
 	                let x = document.getElementById("dropdown-user-body");
