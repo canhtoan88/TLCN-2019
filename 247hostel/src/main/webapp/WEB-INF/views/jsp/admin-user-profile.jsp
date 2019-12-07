@@ -62,7 +62,7 @@
             </button>
 
             <div class="navbar-header pull-left">
-                <a href="home" class="navbar-brand">
+                <a href="signOut" class="navbar-brand">
                     <small>
                         <i class="fa fa-home"></i>
                         247 Hostel
