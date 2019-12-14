@@ -495,13 +495,6 @@
 	                    </div>
 	                    <hr class="dropdown-user-body-content-divide" />
 	                    <div class="dropdown-user-body-content">
-	                        <a href="post">
-	                            <img class="dropdown-user-body-content-image" alt="" src="resources/icons/add.svg" />
-	                            <span class="dropdown-user-body-content-title"> Đăng nhà trọ </span>
-	                        </a>
-	                    </div>
-	                    <hr class="dropdown-user-body-content-divide" />
-	                    <div class="dropdown-user-body-content">
 	                        <a href="user-manage-post">
 	                            <img class="dropdown-user-body-content-image" alt="" src="resources/icons/list.svg" />
 	                            <span class="dropdown-user-body-content-title"> Quản lý nhà trọ </span>
@@ -509,9 +502,9 @@
 	                    </div>
 	                    <hr class="dropdown-user-body-content-divide" />
 	                    <div class="dropdown-user-body-content">
-	                        <a href="change-password">
-	                            <img class="dropdown-user-body-content-image" alt="" src="resources/icons/key.svg" />
-	                            <span class="dropdown-user-body-content-title"> Đổi mật khẩu </span>
+	                        <a href="post">
+	                            <img class="dropdown-user-body-content-image" alt="" src="resources/icons/add.svg" />
+	                            <span class="dropdown-user-body-content-title"> Đăng nhà trọ </span>
 	                        </a>
 	                    </div>
 	                    <hr class="dropdown-user-body-content-divide" />
@@ -552,13 +545,6 @@
 	                        <a href="sign-up">
 	                            <img class="dropdown-user-body-content-image" alt="" src="resources/icons/signup.svg" />
 	                            <span class="dropdown-user-body-content-title"> Đăng ký </span>
-	                        </a>
-	                    </div>
-	                    <hr class="dropdown-user-body-content-divide" />
-	                    <div class="dropdown-user-body-content">
-	                        <a href="#">
-	                            <img class="dropdown-user-body-content-image" alt="" src="resources/icons/lock.svg" />
-	                            <span class="dropdown-user-body-content-title"> Quên mật khẩu </span>
 	                        </a>
 	                    </div>
 	                    <hr class="dropdown-user-body-content-divide" />

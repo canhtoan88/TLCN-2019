@@ -992,16 +992,19 @@ public class AppController {
 
 				switch (user.getAuthorization().getId()) {
 				case 3: // user
-					return "redirect:/";
+					session.invalidate();
+					return "redirect:/admin/sign-in";
 
 				case 2: // employee
-					return "redirect:/admin/admin-index";
+					session.invalidate();
+					return "redirect:/admin/sign-in";
 
 				case 1: // admin
 					return "redirect:/admin/admin-index";
 
 				default:
-					return "redirect:/";
+					session.invalidate();
+					return "redirect:/admin/sign-in";
 				}
 			} else {
 				session.invalidate();
@@ -1155,8 +1158,27 @@ public class AppController {
 		if (user != null) { // Login success
 
 			session.setAttribute("user", user);
+			
+			switch (user.getAuthorization().getId()) {
+			case 3: // user
+				session.invalidate();
+				modelMap.addAttribute("message", "Bạn không có quyền thực hiện chức năng này!");
+				return "admin-sign-in";
 
-			return "redirect:/admin/index";
+			case 2: // employee
+				session.invalidate();
+				modelMap.addAttribute("message", "Bạn không có quyền thực hiện chức năng này!");
+				return "admin-sign-in";
+
+			case 1: // admin
+				return "redirect:/admin/index";
+
+			default:
+				session.invalidate();
+				modelMap.addAttribute("message", "Bạn không có quyền thực hiện chức năng này!");
+				return "admin-sign-in";
+			}
+			
 		} else { // Login fail
 
 			session.invalidate();
@@ -1194,6 +1216,63 @@ public class AppController {
 
 				case 1: // admin
 					return "admin-user-profile";
+
+				default:
+					return "redirect:/";
+				}
+			} else {
+				session.invalidate();
+				return "redirect:/admin/sign-in";
+			}
+		} else {
+			session.invalidate();
+			return "redirect:/admin/sign-in";
+		}
+	}
+
+	@GetMapping
+	@RequestMapping("admin/employees-manage")
+	public String getAdminEmployeesManage(HttpServletRequest request, ModelMap modelMap) {
+
+		HttpSession session = request.getSession();
+		User userSession = (User) session.getAttribute("user");
+		if (userSession != null) {
+
+			User user = userDao.getUserById(userSession.getId());
+			if (user != null) {
+
+				//
+				Avatar avatar = avatarDao.getAvatarByIdUser(user.getId());
+				Employee employee = employeeDao.getEmployeeByUser(user);
+				Department department = departmentDao.getDepartmentById(employee.getDepartment().getId());
+
+				session.setAttribute("user", user);
+				modelMap.addAttribute("avatar", avatar);
+				modelMap.addAttribute("employee", employee);
+				modelMap.addAttribute("department", department);
+
+				//
+				List<Employee> employees = employeeDao.getEmployees(1, 10);
+				List<Employee> employees2 = new ArrayList<>();
+				for (Employee employee2 : employees) {
+					User user2 = userDao.getUserById(employee2.getUser().getId());
+					Department department2 = departmentDao.getDepartmentById(employee2.getDepartment().getId());
+					employee2.setUser(user2);
+					employee2.setDepartment(department2);
+					employees2.add(employee2);
+				}
+				
+				modelMap.addAttribute("employees", employees2);
+
+				switch (user.getAuthorization().getId()) {
+				case 3: // user
+					return "redirect:/";
+
+				case 2: // employee
+					return "admin-users-manage";
+
+				case 1: // admin
+					return "admin-employees-manage";
 
 				default:
 					return "redirect:/";

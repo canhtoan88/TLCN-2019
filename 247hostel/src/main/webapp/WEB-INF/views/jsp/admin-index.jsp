@@ -354,6 +354,15 @@
                 </li>
 
                 <li class="">
+                    <a href="employees-manage">
+                        <i class="menu-icon fa fa-users"></i>
+                        <span class="menu-text"> Quản lý nhân viên </span>
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+
+                <li class="">
                     <a href="users-manage">
                         <i class="menu-icon fa fa-users"></i>
                         <span class="menu-text"> Quản lý user </span>

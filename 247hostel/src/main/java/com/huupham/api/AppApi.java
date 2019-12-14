@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.huupham.dao.AvatarDao;
 import com.huupham.dao.CityDao;
+import com.huupham.dao.DepartmentDao;
 import com.huupham.dao.DistrictDao;
+import com.huupham.dao.EmployeeDao;
 import com.huupham.dao.HostelDao;
 import com.huupham.dao.ImageDao;
 import com.huupham.dao.PostDao;
@@ -25,7 +27,9 @@ import com.huupham.dao.StreetDao;
 import com.huupham.dao.UserDao;
 import com.huupham.dao.VideoDao;
 import com.huupham.entities.City;
+import com.huupham.entities.Department;
 import com.huupham.entities.District;
+import com.huupham.entities.Employee;
 import com.huupham.entities.Hostel;
 import com.huupham.entities.Image;
 import com.huupham.entities.Rate;
@@ -71,6 +75,12 @@ public class AppApi {
 
 	@Autowired
 	PostDao postDao;
+
+	@Autowired
+	EmployeeDao employeeDao;
+
+	@Autowired
+	DepartmentDao departmentDao;
 
 	private RangePrice[] rangePrices = { new RangePrice(0, 2), new RangePrice(2, 3), new RangePrice(3, 4),
 			new RangePrice(4, 6), new RangePrice(6, 10), new RangePrice(10, 999) };
@@ -726,6 +736,51 @@ public class AppApi {
 						+ rateUpdate.getUser().getId() + ", " + (j + 1)
 						+ "\" alt=\"\" src=\"../resources/icons/star_not_liked.svg\" /></div>";
 			}
+		}
+
+		return html;
+	}
+
+	@GetMapping
+	@RequestMapping(value = "getEmployees", produces = "text/plain;charset=UTF-8")
+	@ResponseBody
+	public String getEmployees(@RequestParam String page, HttpServletRequest request) {
+
+		//
+		List<Employee> employees = employeeDao.getEmployees(Integer.parseInt(page), 10);
+		
+		List<Employee> employees2 = new ArrayList<>();
+		for (Employee employee2 : employees) {
+			User user2 = userDao.getUserById(employee2.getUser().getId());
+			Department department2 = departmentDao.getDepartmentById(employee2.getDepartment().getId());
+			employee2.setUser(user2);
+			employee2.setDepartment(department2);
+			employees2.add(employee2);
+		}
+
+		String html = "";
+
+		for (Employee employee : employees2) {
+
+			html += "<tr>";
+			html += "<td>" + employee.getId() + "</td>";
+			html += "<td><a href=\"#\" target=\"_blank\">" + employee.getUser().getFullname() + "</a></td>";
+			html += "<td>" + employee.getUser().getPhone() + "</td>";
+			html += "<td>" + employee.getUser().getEmail() + "</td>";
+			html += "<td>" + employee.getDepartment().getName() + "</td>";
+			html += "<td>" + employee.getSalary() + "</td>";
+			html += "<td>" + employee.getTimeStart() + "</td>";
+			html += "<td>";
+
+			html += "<div class=\"hidden-sm hidden-xs btn-group\">";
+			html += "<button class=\"btn btn-xs btn-success\"><i class=\"ace-icon fa fa-check bigger-120\"></i></button>";
+			html += "<button class=\"btn btn-xs btn-info\"><i class=\"ace-icon fa fa-pencil bigger-120\"></i></button>";
+			html += "<button class=\"btn btn-xs btn-danger\"><i class=\"ace-icon fa fa-trash-o bigger-120\"></i></button>";
+			html += "<button class=\"btn btn-xs btn-warning\"><i class=\"ace-icon fa fa-flag bigger-120\"></i></button>";
+			html += "</div>";
+
+			html += "</td>";
+			html += "</tr>";
 		}
 
 		return html;

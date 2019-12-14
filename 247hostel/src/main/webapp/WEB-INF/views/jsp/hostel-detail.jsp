@@ -119,6 +119,22 @@
 
         <!-- start header -->
         <header class="header">
+        
+        	<!-- mobile header -->
+           	<div class="header-banner">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-4">
+                            <div class="logo">
+                                <a href="../home">
+                                    <img src="../resources/icons/logo.png" alt="">
+                                    <strong>iHostel</strong>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <!-- start header menu fixed -->
             <div class="header-menu hidden-xs header-menu-fixed">

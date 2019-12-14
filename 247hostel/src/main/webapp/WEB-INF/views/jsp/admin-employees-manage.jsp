@@ -46,6 +46,23 @@
 		<script src="../resources/ace-master/assets/js/html5shiv.min.js"></script>
 		<script src="../resources/ace-master/assets/js/respond.min.js"></script>
 		<![endif]-->
+
+    <script>
+        function getEmployees(page) {
+
+        	$.ajax({
+        		type : "GET",
+        		url : "http://localhost:8080/247hostel/api/getEmployees",
+        		data : {
+        			page : page
+        		},
+        		success : function(value) {
+        			
+        			$("#table-tbody").html(value)
+        		}
+        	});
+        }
+    </script>
 </head>
 
 <body class="no-skin">
@@ -430,7 +447,7 @@
 
                     <div class="page-header">
                         <h1>
-                            Thông tin cá nhân
+                            Quản lý nhân viên
                             <small>
                                 <i class="ace-icon fa fa-angle-double-right"></i>                                
                             </small>
@@ -440,118 +457,87 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <!-- PAGE CONTENT BEGINS -->
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">ID</th>
+                                        <th scope="col">Họ tên</th>
+                                        <th scope="col">Số điện thoại</th>
+                                        <th scope="col">Email</th>
+                                        <th scope="col">Phòng ban</th>
+                                        <th scope="col">Lương (VND)</th>
+                                        <th scope="col">Ngày bắt đầu</th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-tbody">
+                                	<c:forEach items="${employees }" var="e">
+                                    <tr>
+                                        <td>${e.getId() }</td>
+                                        <td><strong style="color: #438EB9; text-transform: uppercase;">${e.getUser().getFullname() }</strong></td>
+                                        <td>${e.getUser().getPhone() }</td>
+                                        <td>${e.getUser().getEmail() }</td>
+                                        <td>${e.getDepartment().getName() }</td>
+                                        <td>${e.getSalary() }</td>
+                                        <td>${e.getTimeStart() }</td>
+                                        <td>
+                                            <div class="hidden-sm hidden-xs btn-group">
+                                                <button class="btn btn-xs btn-success">
+                                                    <i class="ace-icon fa fa-check bigger-120"></i>
+                                                </button>
 
+                                                <button class="btn btn-xs btn-info">
+                                                    <i class="ace-icon fa fa-pencil bigger-120"></i>
+                                                </button>
+
+                                                <button class="btn btn-xs btn-danger">
+                                                    <i class="ace-icon fa fa-trash-o bigger-120"></i>
+                                                </button>
+
+                                                <button class="btn btn-xs btn-warning">
+                                                    <i class="ace-icon fa fa-flag bigger-120"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    </c:forEach>
+                                </tbody>
+                            </table>
                             <div>
-                                <div id="user-profile-1" class="user-profile row">
-                                    <div class="col-xs-12 col-sm-3 center">
-                                        <div class="space-12"></div>
-                                        <div>
-                                            <span class="profile-picture">
-                                                <img id="avatar" class="editable img-responsive editable-click editable-empty" alt="Alex's Avatar" 
-                                                src="../${avatar.getUrl() }">
-                                            </span>
+                                <ul class="pagination">
+                                    <li class="disabled">
+                                        <a href="#">
+                                            <i class="ace-icon fa fa-angle-double-left"></i>
+                                        </a>
+                                        
+                                    </li>
 
-                                            <div class="space-4"></div>
+                                    <li class="active">
+                                        <a onclick="getEmployees(1)">1</a>
+                                    </li>
 
-                                            <div class="width-80 label label-info label-xlg arrowed-in arrowed-in-right">
-                                                <div class="inline position-relative">
-                                                    <a href="#" class="user-title-label dropdown-toggle" data-toggle="dropdown">
-                                                        <i class="ace-icon fa fa-circle light-green"></i>
-                                                        &nbsp;
-                                                        <span class="white">${user.getFullname() }</span>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <li>
+                                        <a onclick="getEmployees(2)">2</a>
+                                    </li>
 
-                                    <div class="col-xs-12 col-sm-9">
-                                        <div class="space-12"></div>
+                                    <li>
+                                        <a onclick="getEmployees(3)">3</a>
+                                    </li>
 
-                                        <div class="profile-user-info profile-user-info-striped">
-                                            <div class="profile-info-row">
-                                                <div class="profile-info-name"> Họ tên </div>
+                                    <li>
+                                        <a onclick="getEmployees(4)">4</a>
+                                    </li>
 
-                                                <div class="profile-info-value">
-                                                    <span class="editable editable-click" id="fullname">
-                                                    	<strong>${user.getFullname() }</strong>
-                                                    </span>
-                                                </div>
-                                            </div>
+                                    <li>
+                                        <a onclick="getEmployees(5)">5</a>
+                                    </li>
 
-                                            <div class="profile-info-row">
-                                                <div class="profile-info-name"> Số điện thoại </div>
-
-                                                <div class="profile-info-value">
-                                                    <span class="editable editable-click" id="phone">${user.getPhone() }</span>
-                                                </div>
-                                            </div>
-
-                                            <div class="profile-info-row">
-                                                <div class="profile-info-name"> Email </div>
-
-                                                <div class="profile-info-value">
-                                                    <span class="editable editable-click" id="email">${user.getEmail() }</span>
-                                                </div>
-                                            </div>
-
-                                            <div class="profile-info-row">
-                                                <div class="profile-info-name"> Địa chỉ </div>
-
-                                                <div class="profile-info-value">
-                                                    <i class="fa fa-map-marker light-orange bigger-110"></i>
-                                                    <span class="editable editable-click" id="country">${user.getAddress() }</span>
-                                                </div>
-                                            </div>
-
-                                            <div class="profile-info-row">
-                                                <div class="profile-info-name"> Giới tính </div>
-
-                                                <div class="profile-info-value">
-                                                    <span class="editable editable-click" id="gender">${user.isGender() ? "Nam" : "Nữ" }</span>
-                                                </div>
-                                            </div>
-
-                                            <div class="profile-info-row">
-                                                <div class="profile-info-name"> Sinh nhật </div>
-
-                                                <div class="profile-info-value">
-                                                    <span class="editable editable-click" id="birthday">${user.getBirthday() }</span>
-                                                </div>
-                                            </div>
-
-                                            <div class="profile-info-row">
-                                                <div class="profile-info-name"> Ngày bắt đầu </div>
-
-                                                <div class="profile-info-value">
-                                                    <span class="editable editable-click" id="timeStart">${employee.getTimeStart() }</span>
-                                                </div>
-                                            </div>
-
-                                            <div class="profile-info-row">
-                                                <div class="profile-info-name"> Lương </div>
-
-                                                <div class="profile-info-value">
-                                                    <span class="editable editable-click" id="salary">${employee.getSalary() } VND</span>
-                                                </div>
-                                            </div>
-
-                                            <div class="profile-info-row">
-                                                <div class="profile-info-name"> Phòng ban </div>
-
-                                                <div class="profile-info-value">
-                                                    <span class="editable editable-click" id="department">${department.getName() }</span>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="space-12"></div>
-
-                                        <div class="container">
-                                            <button class="btn btn-info">Cập nhập thông tin</button>
-                                        </div>
-                                    </div>
-                                </div>
+                                    <li>
+                                        <a href="#">
+                                            <i class="ace-icon fa fa-angle-double-right"></i>
+                                        </a>
+                                    </li>
+                                </ul>
                             </div>
                             <!-- PAGE CONTENT ENDS -->
                         </div><!-- /.col -->

@@ -134,7 +134,7 @@
 </head>
 
 <body class="no-skin">
-    <div id="navbar" class="navbar navbar-default          ace-save-state">
+    <div id="navbar" class="navbar navbar-default ace-save-state">
         <div class="navbar-container ace-save-state" id="navbar-container">
             <button type="button" class="navbar-toggle menu-toggler pull-left" id="menu-toggler" data-target="#sidebar">
                 <span class="sr-only">Toggle sidebar</span>
@@ -431,6 +431,15 @@
                     <a href="user-profile">
                         <i class="menu-icon fa fa-user"></i>
                         <span class="menu-text"> Thông tin cá nhân </span>
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+
+                <li class="">
+                    <a href="employees-manage">
+                        <i class="menu-icon fa fa-users"></i>
+                        <span class="menu-text"> Quản lý nhân viên </span>
                     </a>
 
                     <b class="arrow"></b>

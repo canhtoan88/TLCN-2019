@@ -369,6 +369,15 @@
                 </li>
 
                 <li class="">
+                    <a href="employees-manage">
+                        <i class="menu-icon fa fa-users"></i>
+                        <span class="menu-text"> Quản lý nhân viên </span>
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+
+                <li class="">
                     <a href="users-manage">
                         <i class="menu-icon fa fa-users"></i>
                         <span class="menu-text"> Quản lý user </span>
@@ -464,7 +473,7 @@
                                 	<c:forEach items="${users }" var="u">
                                     <tr>
                                         <td>${u.getId() }</td>
-                                        <td><a href="#" target="_blank">${u.getFullname() }</a></td>
+                                        <td><strong style="color: #438EB9; text-transform: uppercase;">${u.getFullname() }</strong></td>
                                         <td>${u.getPhone() }</td>
                                         <td>${u.getEmail() }</td>
                                         <td>${u.getAddress() }</td>
