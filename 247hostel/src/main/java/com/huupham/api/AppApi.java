@@ -490,7 +490,7 @@ public class AppApi {
 				break;
 			}
 
-			html += "<td class=\"text-center\">";
+			html += "<td>";
 			html += "<span id=\"" + hostel.getId() + "\" class=\"span-click\" data-value=\"" + hostel.getId() + "\">";
 			if (hostel.isIsRented()) {
 				html += "<span class=\"isRented isRented-True\" style=\"padding: 5px 10px;\">Đã cho thuê</span>";

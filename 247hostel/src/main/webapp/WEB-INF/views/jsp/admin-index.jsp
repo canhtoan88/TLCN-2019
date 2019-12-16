@@ -574,8 +574,8 @@
                                             <tbody>
                                                 <c:forEach items="${hostelRangePriceFull }" var="hostelRPF" varStatus="loop">
                                                     <tr>
-                                                        <th>${loop.index + 1 }</th>
-                                                        <td>${hostelRPF.getLabel() }</td>
+                                                        <td>${loop.index + 1 }</td>
+                                                        <th>${hostelRPF.getLabel() }</th>
                                                         <td>${hostelRPF.getCount() }</td>
                                                         <td>${hostelRPF.getPercent() }</td>
                                                     </tr>

@@ -245,14 +245,14 @@
                                                     </c:choose>
                                                     <c:choose>
                                                         <c:when test="${hostel.isIsRented() == true}">
-                                                            <td class="text-center">
+                                                            <td>
                                                                 <span id="${hostel.getId() }" class="span-click" data-value="${hostel.getId() }">
                                                                     <span class="isRented isRented-True" style="padding: 5px 10px;">Đã cho thuê</span>
                                                                 </span>
                                                             </td>
                                                         </c:when>
                                                         <c:otherwise>
-                                                            <td class="text-center">
+                                                            <td>
                                                                 <span id="${hostel.getId() }" class="span-click" data-value="${hostel.getId() }">
                                                                     <span class="isRented isRented-False" style="padding: 5px 10px;">Chưa cho thuê</span>
                                                                 </span>

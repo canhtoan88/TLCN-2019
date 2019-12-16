@@ -46,6 +46,28 @@
 		<script src="../resources/ace-master/assets/js/html5shiv.min.js"></script>
 		<script src="../resources/ace-master/assets/js/respond.min.js"></script>
 		<![endif]-->
+		
+		<style>
+			.update-info-hide {
+				display: none;
+			}
+			
+			.update-info-show {
+				display: block;
+			}
+		</style>	
+                                            		
+		<script>
+			function onUpdateInfoButtonClick(){
+				document.getElementById("page-header-update-info").setAttribute("class", "page-header");
+				document.getElementById("row-update-info").setAttribute("class", "row");
+			}
+
+			function hideContent(){
+				document.getElementById("page-header-update-info").setAttribute("class", "page-header update-info-hide");
+				document.getElementById("row-update-info").setAttribute("class", "row update-info-hide");
+			}
+		</script>
 </head>
 
 <body class="no-skin">
@@ -548,14 +570,120 @@
                                         <div class="space-12"></div>
 
                                         <div class="container">
-                                            <button class="btn btn-info">Cập nhập thông tin</button>
+                                            <button class="btn btn-info" onclick="onUpdateInfoButtonClick()">Cập nhập thông tin</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            
                             <!-- PAGE CONTENT ENDS -->
                         </div><!-- /.col -->
                     </div><!-- /.row -->
+
+                    <div class="hr hr-24"></div>
+                    
+	                <div class="page-header update-info-hide" id="page-header-update-info">
+                       <h1>
+                           Cập nhập thông tin
+                           <small>
+                               <i class="ace-icon fa fa-angle-double-right"></i>
+                           </small>
+                       </h1>
+	                </div><!-- /.page-header -->
+                   
+                    <div class="row update-info-hide" id="row-update-info">	                    
+                    	<div class="col-xs-12">
+                            <form class="form-horizontal" role="form">
+	                    		<div class="form-group">
+	                                <label class="col-sm-3 control-label no-padding-right" for="fullname"> Họ tên </label>
+	
+	                                <div class="col-sm-9">
+	                                    <input type="text" id="fullname" placeholder="Họ tên" class="col-xs-10 col-sm-5" 
+	                                    	value="${user.getFullname() }" required="required"/>
+	                                </div>
+	                            </div>
+	                            
+	                            <div class="form-group">
+	                                <label class="col-sm-3 control-label no-padding-right" for="phone"> Số điện thoại </label>
+	
+	                                <div class="col-sm-9">
+	                                    <input type="tel" id="phone" placeholder="Số điện thoại" class="col-xs-10 col-sm-5" 
+	                                    	value="${user.getPhone() }"  required="required"/>
+	                                </div>
+	                            </div>
+	                            
+	                            <div class="form-group">
+	                                <label class="col-sm-3 control-label no-padding-right" for="email"> Email </label>
+	
+	                                <div class="col-sm-9">
+	                                    <input type="email" id="email" placeholder="Email" class="col-xs-10 col-sm-5" 
+	                                    	value="${user.getEmail() }"  required="required"/>
+	                                </div>
+	                            </div>
+	                            
+	                            <div class="form-group">
+	                                <label class="col-sm-3 control-label no-padding-right" for="address"> Địa chỉ </label>
+	
+	                                <div class="col-sm-9">
+	                                    <input type="text" id="address" placeholder="Địa chỉ" class="col-xs-10 col-sm-5"  
+	                                    	value="${user.getAddress() }"/>
+	                                </div>
+	                            </div>
+	                            
+	                            <div class="form-group">
+	                                <label class="col-sm-3 control-label no-padding-right" for="birthday"> Sinh nhật </label>
+	
+	                                <div class="col-sm-9">
+	                                    <input type="date" id="birthday" placeholder="Sinh nhật" class="col-xs-10 col-sm-5"  
+	                                    	value="${user.getBirthday() }"/>
+	                                </div>
+	                            </div>
+	                            
+	                            <div class="form-group">
+	                                <label class="col-sm-3 control-label no-padding-right" for="timeStart"> Ngày bắt đầu </label>
+	
+	                                <div class="col-sm-9">
+	                                    <input type="date" id="timeStart" placeholder="Ngày bắt đầu" class="col-xs-10 col-sm-5" 
+	                                    	value="${employee.getTimeStart() }" required="required"/>
+	                                </div>
+	                            </div>
+	                            
+	                            <div class="form-group">
+	                                <label class="col-sm-3 control-label no-padding-right" for="salary"> Lương </label>
+	
+	                                <div class="col-sm-9">
+	                                    <input type="number" id="salary" placeholder="Lương" class="col-xs-10 col-sm-5" 
+	                                    	value="${employee.getSalary() }" required="required"/>
+	                                </div>
+	                            </div>
+	                            
+	                            <div class="form-group">
+	                                <label class="col-sm-3 control-label no-padding-right" for="department"> Phòng ban </label>
+	
+	                                <div class="col-sm-9">
+	                                    <select id="department" class="col-xs-10 col-sm-5" required="required">
+	                                        <option value="${department.getId() }">${department.getName() }</option>
+	                                    </select>
+	                                </div>
+	                            </div>
+	
+	                            <div class="clearfix form-actions">
+	                                <div class="col-md-offset-3 col-md-9">
+	                                    <button class="btn btn-info" type="button" onclick="hideContent()">
+	                                        <i class="ace-icon fa fa-check bigger-110"></i>
+	                                        Cập nhật
+	                                    </button>
+	
+	                                    &nbsp; &nbsp; &nbsp;
+	                                    <button class="btn" type="reset" onclick="hideContent()">
+	                                        <i class="ace-icon fa fa-undo bigger-110"></i>
+	                                        Hủy
+	                                    </button>
+	                                </div>
+	                            </div>
+                            </form>
+                    	</div>
+                    </div>
                 </div><!-- /.page-content -->
             </div>
         </div><!-- /.main-content -->
