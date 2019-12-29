@@ -8,6 +8,7 @@
     <meta charset="UTF-8">
     <title>247 hostel</title>
     <link rel="shortcut icon" href="resources/icons/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Boostrap -->
     <link rel="stylesheet" href="resources/bootstrap/css/bootstrap.min.css" />
