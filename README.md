@@ -1,5 +1,5 @@
 # TIỂU LUẬN CHUYÊN NGÀNH
-ĐỀ TÀI: TÌM HIỂU CÔNG NGHỆ SPRING BOOT - XÂY DỰNG WEBSITE TÌM KIẾM NHÀ TRỌ TRỰC TUYẾN
+ĐỀ TÀI: TÌM HIỂU CÔNG NGHỆ SPRING BOOT VÀ GOOGLE MAP API - XÂY DỰNG WEBSITE TÌM KIẾM NHÀ TRỌ TRỰC TUYẾN
 # 
 GVHD: TS. LÊ VĂN VINH
 
@@ -9,6 +9,6 @@ NHÓM SINH VIÊN THỰC HIỆN:
 # 
 Link bài báo cáo đề tài:
 
-https://drive.google.com/file/d/13SUaS3wlmatHlpNRx784GiXtWcA1AF_7/view?usp=sharing
+https://drive.google.com/drive/folders/17LGtDhCvUEM0SKov5_-j48fqD22kXEoX?usp=sharing
 #
 HCMUTE - 09/2019
